@@ -1,14 +1,17 @@
 {
   "name": "Api",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "main.js",
   "license": "MIT",
   "scripts": {
-	"start": "node index.js",
-	"dev": "nodemon index.js"
+    "start": "node main.js",
+    "dev": "nodemon main.js"
   },
   "dependencies": {
-    "express": "^5.2.1"
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "pg-promise": "^12.7.1",
+    "sequelize": "^6.37.8"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
