@@ -51,6 +51,11 @@ CREATE INDEX idx_profissional_permissao_id_permissao ON profissional_permissao (
 INSERT INTO permissao (descricao) VALUES
     ('ADMIN');
 
+/* Exemplo add permissão pra alguém:
+INSERT INTO profissional_permissao (profissional_login, id_permissao)
+SELECT 'user@email.com', id FROM permissao;
+*/
+
 INSERT INTO pacientes (
     nome,
     data_nascimento,
