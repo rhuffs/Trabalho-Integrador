@@ -1,5 +1,6 @@
 const express = require("express");
 const authController = require("./auth.controller");
+const { requirePermissao } = require("./auth.config");
 
 const router = express.Router();
 
@@ -10,6 +11,6 @@ router.post("/login", authController.login);
 router.post("/logout", authController.logout);
 
 // POST /novoUsuario - Criar novo usuário
-router.post("/novoUsuario", authController.criarUsuario);
+router.post("/novoUsuario", requirePermissao("ADMIN") ,authController.criarUsuario);
 
 module.exports = router;

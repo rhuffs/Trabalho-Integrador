@@ -35,7 +35,7 @@ ProfissionalPermissao.associate = (models) => {
 		foreignKey: "profissional_login",
 		targetKey: "profissional_login",
 	});
-	UsuarioPermissao.belongsTo(models.Permissao, {
+	ProfissionalPermissao.belongsTo(models.Permissao, {
 		foreignKey: "id_permissao",
 		targetKey: "id",
 		as: "Permissao",

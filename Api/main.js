@@ -2,14 +2,19 @@ const express = require("express");
 const cors = require("cors");
 const pgp = require('pg-promise');
 const app = express();
+const passport = require("passport");
+const authConfig = require("./src/auth/auth.config");
+app.use(passport.initialize());
+authConfig.configureJwtStrategy();
 app.use(express.json());
 app.use(cors());
 
 const PORTA = 3001;
 const pacientesRoutes = require("./src/paciente/pacientes.routes");
-const profissionalRoutes = require("./src/auth/auth.routes");
+const authRoutes = require("./src/auth/auth.routes");
 
 app.use(pacientesRoutes);
+app.use(authRoutes);
 
 app.get('/', (req, res) => {
 	res.json({

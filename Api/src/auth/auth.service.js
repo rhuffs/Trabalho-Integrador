@@ -2,9 +2,9 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const authRepository = require("./auth.repository");
 
-async function autenticarUsuario(email, senha) {
+async function autenticarUsuario(profissional_login, senha) {
     // TODO: Buscar usuário por email usando o repository
-    const usuario = await authRepository.buscarPorId(email);
+    const usuario = await authRepository.buscarPorId(profissional_login);
 
     // TODO: Verificar se o usuário existe
     if (!usuario) {
@@ -24,7 +24,7 @@ async function autenticarUsuario(email, senha) {
 }
 
 async function criarNovoUsuario(dados) {
-    const { username, passwd, nome } = dados;
+    const { username, passwd, nome, telefone, tipo_profissional } = dados;
     // TODO: Gerar o hash da senha antes de salvar no banco
     // Dica 1: defina saltRounds = 10
     // Dica 2: gere o salt com bcrypt.genSaltSync(saltRounds)
@@ -36,13 +36,15 @@ async function criarNovoUsuario(dados) {
     // TODO: Criar usuário no banco usando o repository
     // Passar: email (username), nome, e senha (senhaHash)
     const usuario = await authRepository.criar({
-        email: username,
-        nome: nome || username,
+        profissional_login: username,
+        nome: nome,
         senha: senhaHash,
+        telefone: telefone,
+        tipo_profissional: tipo_profissional,
     });
 
     // TODO: Retornar os dados do usuário criado
-    return { email: usuario.email, nome: usuario.nome };
+    return { profissional_login: usuario.profissional_login, nome: usuario.nome, telefone: usuario.telefone, tipo_profissional: usuario.tipo_profissional };
 }
 
 function gerarToken(username) {
@@ -58,7 +60,7 @@ function gerarToken(username) {
     );
 }
 
-async function verificarPermissaoPorDescricao(email, descricaoPermissao) {
+async function verificarPermissaoPorDescricao(profissional_login, descricaoPermissao) {
     try {
         const permissao = await authRepository.buscarPermissaoPorDescricao(descricaoPermissao);
 
@@ -66,7 +68,7 @@ async function verificarPermissaoPorDescricao(email, descricaoPermissao) {
             return false;
         }
 
-        const usuarioPermissao = await authRepository.buscarUsuarioPermissao(email, permissao.id);
+        const usuarioPermissao = await authRepository.buscarUsuarioPermissao(profissional_login, permissao.id);
 
         return usuarioPermissao !== null;
     } catch (erro) {
@@ -75,9 +77,9 @@ async function verificarPermissaoPorDescricao(email, descricaoPermissao) {
     }
 }
 
-async function obterPermissoesUsuario(email) {
+async function obterPermissoesUsuario(profissional_login) {
     try {
-        return await authRepository.listarPermissoesUsuario(email);
+        return await authRepository.listarPermissoesUsuario(profissional_login);
     } catch (erro) {
         console.error("Erro ao obter permissões do usuário:", erro);
         return [];

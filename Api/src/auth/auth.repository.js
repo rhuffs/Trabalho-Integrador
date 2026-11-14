@@ -1,21 +1,15 @@
-const { Usuario, Permissao, UsuarioPermissao } = require("../database/models");
+const { Profissional, Permissao, ProfissionalPermissao } = require("../database/models");
 
-async function buscarPorEmail(email) {
-    // TODO: Buscar usuário por email no banco de dados
-    // Dica: use Usuario.findOne() com where
-    return Usuario.findOne({ where: {email: email}});
-}
-
-async function buscarPorId(email) {
+async function buscarPorId(profissional_login) {
     // TODO: Buscar usuário por ID (chave primária)
     // Dica: use Usuario.findByPk()
-    return Usuario.findByPk(email);
+    return Profissional.findByPk(profissional_login);
 }
 
 async function criar(dados) {
     // TODO: Criar um novo usuário no banco de dados
     // Dica: use Usuario.create() passando os dados
-    return Usuario.create(dados);
+    return Profissional.create(dados);
 }
 
 async function buscarPermissaoPorDescricao(descricao) {
@@ -24,17 +18,17 @@ async function buscarPermissaoPorDescricao(descricao) {
     });
 }
 
-async function buscarUsuarioPermissao(email, idPermissao) {
-    return UsuarioPermissao.findOne({
+async function buscarUsuarioPermissao(profissional_login, idPermissao) {
+    return ProfissionalPermissao.findOne({
         where: {
-            email: email,
+            profissional_login: profissional_login,
             id_permissao: idPermissao,
         },
     });
 }
 
 async function listarPermissoesUsuario(email) {
-    const permissoes = await UsuarioPermissao.findAll({
+    const permissoes = await ProfissionalPermissao.findAll({
         where: {
             email: email,
         },
@@ -50,7 +44,6 @@ async function listarPermissoesUsuario(email) {
 }
 
 module.exports = {
-    buscarPorEmail,
     buscarPorId,
     criar,
     buscarPermissaoPorDescricao,

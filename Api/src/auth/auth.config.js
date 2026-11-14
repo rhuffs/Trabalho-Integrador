@@ -118,9 +118,9 @@ const requirePermissao = (descricaoPermissao) => {
                     return res.status(401).json({ message: "Usuário não autenticado." });
                 }
 
-                const email = req.user.email;
+                const profissional_login = req.user.profissional_login;
                 const temPermissao = await authService.verificarPermissaoPorDescricao(
-                    email,
+                    profissional_login,
                     descricaoPermissao,
                 );
 
