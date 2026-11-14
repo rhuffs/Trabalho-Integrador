@@ -22,6 +22,35 @@ CREATE TABLE pacientes (
     updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE TYPE enum_profissional_tipo AS ENUM ('DENTISTA', 'SECRETARIO');
+
+CREATE TABLE profissional (
+    profissional_login       VARCHAR(255) PRIMARY KEY,
+    nome        VARCHAR(100) NOT NULL,
+    senha       VARCHAR(255) NOT NULL,  -- hash bcrypt da senha
+	telefone    VARCHAR(255) NOT NULL,
+	tipo_profissional enum_profissional_tipo NOT NULL
+);
+
+
+CREATE TABLE permissao (
+    id          BIGSERIAL PRIMARY KEY,
+    descricao   VARCHAR(100) NOT NULL UNIQUE
+);
+
+
+CREATE TABLE profissional_permissao (
+    profissional_login           VARCHAR(255) NOT NULL REFERENCES profissional(profissional_login) ON DELETE CASCADE,
+    id_permissao    BIGINT NOT NULL REFERENCES permissao(id) ON DELETE CASCADE,
+    PRIMARY KEY (profissional_login, id_permissao)
+);
+
+CREATE INDEX idx_profissional_permissao_profissional_login ON profissional_permissao (profissional_login);
+CREATE INDEX idx_profissional_permissao_id_permissao ON profissional_permissao (id_permissao);
+
+INSERT INTO permissao (descricao) VALUES
+    ('ADMIN');
+
 INSERT INTO pacientes (
     nome,
     data_nascimento,
