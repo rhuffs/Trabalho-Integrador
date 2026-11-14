@@ -7,6 +7,7 @@ app.use(cors());
 
 const PORTA = 3001;
 const pacientesRoutes = require("./src/paciente/pacientes.routes");
+const profissionalRoutes = require("./src/auth/auth.routes");
 
 app.use(pacientesRoutes);
 
