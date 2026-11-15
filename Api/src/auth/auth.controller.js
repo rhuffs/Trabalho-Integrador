@@ -2,7 +2,7 @@ const authService = require("./auth.service");
 
 async function deletarProfissional(req,res) {
     try {
-        const profissional = await authService.deletar(req.params.id);
+        const profissional = await authService.deletarUsuario(req.body.profissional_login);
         if (!profissional) return res.status(404).json({ erro: "profissional não encontrado" });
         return res.status(204).send();
     } catch (erro) {

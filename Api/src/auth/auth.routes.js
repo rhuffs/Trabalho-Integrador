@@ -13,4 +13,6 @@ router.post("/logout", authController.logout);
 // POST /novoUsuario - Criar novo usuário
 router.post("/novoUsuario", requirePermissao("ADMIN") ,authController.criarUsuario);
 
+router.delete("/deletarUsuario", requirePermissao("ADMIN"), authController.deletarProfissional);
+
 module.exports = router;
