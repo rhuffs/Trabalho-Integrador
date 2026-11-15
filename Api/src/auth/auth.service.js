@@ -2,6 +2,10 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const authRepository = require("./auth.repository");
 
+async function deletarUsuario(profissional_login){
+    return authRepository.deletar(profissional_login);
+}
+
 async function autenticarUsuario(profissional_login, senha) {
     // TODO: Buscar usuário por email usando o repository
     const usuario = await authRepository.buscarPorId(profissional_login);
@@ -92,4 +96,5 @@ module.exports = {
     gerarToken,
     verificarPermissaoPorDescricao,
     obterPermissoesUsuario,
+    deletarUsuario,
 };

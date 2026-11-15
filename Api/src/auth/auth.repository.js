@@ -6,6 +6,13 @@ async function buscarPorId(profissional_login) {
     return Profissional.findByPk(profissional_login);
 }
 
+async function deletar(profissional_login) {
+    const profissional = await Profissional.findByPk(profissional_login);
+    if(!profissional) return null;
+    await profissional.destroy();
+    return profissional;
+}
+
 async function criar(dados) {
     // TODO: Criar um novo usuário no banco de dados
     // Dica: use Usuario.create() passando os dados
@@ -54,4 +61,5 @@ module.exports = {
     buscarPermissaoPorDescricao,
     buscarUsuarioPermissao,
     listarPermissoesUsuario,
+    deletar,
 };

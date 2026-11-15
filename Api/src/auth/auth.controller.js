@@ -1,5 +1,16 @@
 const authService = require("./auth.service");
 
+async function deletarProfissional(req,res) {
+    try {
+        const profissional = await authService.deletar(req.params.id);
+        if (!profissional) return res.status(404).json({ erro: "profissional não encontrado" });
+        return res.status(204).send();
+    } catch (erro) {
+        console.log("Erro ao deletar profissional:", erro);
+        return res.status(500).json({ erro: erro.message });
+    }
+}
+
 async function login(req, res) {
     try {
         // TODO: Extrair username e password do corpo da requisição
@@ -62,4 +73,5 @@ module.exports = {
     login,
     logout,
     criarUsuario,
+    deletarProfissional,
 };
