@@ -90,6 +90,18 @@ async function obterPermissoesUsuario(profissional_login) {
     }
 }
 
+async function listar(){
+    return authRepository.listar();
+}
+
+async function buscarLogin(profissional_login) {
+    return authRepository.buscarLogin(profissional_login);
+}
+
+async function buscarNome(nome) {
+    return authRepository.buscarNome(nome);
+}
+
 module.exports = {
     autenticarUsuario,
     criarNovoUsuario,
@@ -97,4 +109,7 @@ module.exports = {
     verificarPermissaoPorDescricao,
     obterPermissoesUsuario,
     deletarUsuario,
+    listar,
+    buscarLogin,
+    buscarNome,
 };

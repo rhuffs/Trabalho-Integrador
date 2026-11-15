@@ -55,6 +55,18 @@ async function listarPermissoesUsuario(email) {
     return permissoes.map((up) => up.Permissao);
 }
 
+async function listar() {
+    return Profissional.findAll({ order: [["nome", "ASC"]] });
+}
+
+async function buscarLogin(profissional_login) {
+    return Profissional.findByPk(profissional_login);
+}
+
+async function buscarNome(nome) {
+    return Profissional.findAll({ where: { nome: nome }});
+}
+
 module.exports = {
     buscarPorId,
     criar,
@@ -62,4 +74,7 @@ module.exports = {
     buscarUsuarioPermissao,
     listarPermissoesUsuario,
     deletar,
+    listar,
+    buscarLogin,
+    buscarNome,
 };

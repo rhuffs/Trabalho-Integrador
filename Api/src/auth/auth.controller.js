@@ -69,9 +69,44 @@ async function criarUsuario(req, res) {
     }
 }
 
+async function listarUsuarios(req,res) {
+    try {
+        const profissionais = await authService.listar();
+        return res.status(200).json(profissionais);
+    } catch (erro) {
+        console.log("Erro ao buscar profissionais:", erro);
+        return res.status(500).json({ erro: erro.message });
+    }
+}
+
+async function buscarUsuarioLogin(req,res) {
+    try {
+        const profissional = await authService.buscarLogin(req.body.profissional_login);
+        if (!profissional) return res.status(404).json({ erro: "profissional não encontrado" });
+        return res.status(200).json(profissional);
+    } catch (erro) {
+        console.log("Erro ao buscar profissional:", erro);
+        return res.status(500).json({ erro: erro.message });
+    }
+}
+
+async function buscarUsuariosNome(req,res) {
+    try {
+        const profissionais = await authService.buscarNome(req.body.nome);
+        if (!profissionais) return res.status(404).json({ erro: "nenhum profissional não encontrado" });
+        return res.status(200).json(profissionais);
+    } catch (erro) {
+        console.log("Erro ao buscar profissionais:", erro);
+        return res.status(500).json({ erro: erro.message });
+    }
+}
+
 module.exports = {
     login,
     logout,
     criarUsuario,
     deletarProfissional,
+    listarUsuarios,
+    buscarUsuarioLogin,
+    buscarUsuariosNome,
 };

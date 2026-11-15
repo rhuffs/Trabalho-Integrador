@@ -139,6 +139,43 @@ const requirePermissao = (descricaoPermissao) => {
     ];
 };
 
+const requirePermissaoMult = (descricaoPermissao) => {
+    return [
+        requireJWTAuth,
+        async (req, res, next) => {
+            try {
+                // req.user é definido pelo requireJWTAuth
+                if (!req.user) {
+                    return res.status(401).json({ message: "Usuário não autenticado." });
+                }
+                let cond = false;
+                const profissional_login = req.user.profissional_login;
+                for(let i = 0; i < descricaoPermissao.length; i++){
+                    const perm = await authService.verificarPermissaoPorDescricao(
+                        profissional_login,
+                        descricaoPermissao[i],
+                    );
+                    if(perm) {
+                        cond = true;
+                        break;
+                    }
+                }
+
+                if (!cond) {
+                    return res.status(403).json({
+                        message: `Acesso negado. Permissão necessária: ${descricaoPermissao}`,
+                    });
+                }
+
+                next();
+            } catch (error) {
+                console.error("Erro ao verificar permissão:", error);
+                return res.status(500).json({ message: "Erro interno do servidor." });
+            }
+        },
+    ];
+};
+
 module.exports = {
     configureLocalStrategy,
     configureJwtStrategy,
@@ -146,4 +183,5 @@ module.exports = {
     requireJWTAuth,
     verificarPermissaoMiddleware,
     requirePermissao,
+    requirePermissaoMult,
 };
