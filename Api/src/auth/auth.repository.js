@@ -9,7 +9,12 @@ async function buscarPorId(profissional_login) {
 async function criar(dados) {
     // TODO: Criar um novo usuário no banco de dados
     // Dica: use Usuario.create() passando os dados
-    return Profissional.create(dados);
+    const profissional = await Profissional.create(dados);
+    if(dados.tipo_profissional == "SECRETARIO"){
+        const perm = await Permissao.findOne({ where: {descricao: 'SECRETARIO'}, });
+        const done = await ProfissionalPermissao.create({profissional_login: dados.profissional_login, id_permissao: perm.id });
+    }
+    return profissional;
 }
 
 async function buscarPermissaoPorDescricao(descricao) {

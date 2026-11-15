@@ -49,6 +49,7 @@ CREATE INDEX idx_profissional_permissao_profissional_login ON profissional_permi
 CREATE INDEX idx_profissional_permissao_id_permissao ON profissional_permissao (id_permissao);
 
 INSERT INTO permissao (descricao) VALUES
+    ('SECRETARIO'),
     ('ADMIN');
 
 /* Exemplo add permissão pra alguém:
