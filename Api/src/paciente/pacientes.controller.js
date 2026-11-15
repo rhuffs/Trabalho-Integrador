@@ -52,16 +52,6 @@ async function deletar(req, res) {
     }
 }
 
-async function buscarPorNome(req,res) {
-    try {
-        const paciente = await pacientesService.buscarPorNome(req.body.nome);
-        if (!paciente || paciente.length === 0) return res.status(404).json({erro: "paciente não encontrado"});
-        return res.status(200).json(paciente);
-    } catch (erro) {
-        console.log("Erro ao buscar paciente:", erro);
-        return res.status(500).json({ erro: erro.message });
-    }
-}
 
 async function buscarPorNome(req,res) {
     try {

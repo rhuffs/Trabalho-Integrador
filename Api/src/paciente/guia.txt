@@ -1,8 +1,7 @@
 Implementados busca por:
 [x] Nome
-[ ] Cidade
-[ ] Telefone
-[ ] CPF
+
+[x] CPF
 
 Funcionalidades relacionadas que ainda virão
 Estas funcionalidades aparecem nos requisitos, mas dependem de outros módulos:
