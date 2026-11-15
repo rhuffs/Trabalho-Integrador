@@ -25,10 +25,30 @@ async function deletar(id) {
     return Paciente;
 }
 
+async function buscarPorNome(nome){
+    return Paciente.findAll({
+        where : {
+            nome : nome
+        }
+    });
+}
+
+async function buscarPorCpf(cpf){
+    return Paciente.findAll({
+        where : {
+            cpf : cpf
+        }
+    });
+}
+
+
+
 module.exports = {
     listar,
     buscarPorId,
     criar,
     atualizar,
     deletar,
+    buscarPorNome,
+    buscarPorCpf,
 };

@@ -6,6 +6,12 @@ const router = express.Router();
 // GET /pacientes
 router.get("/pacientes", pacientesController.listar);
 
+// GET /pacientes/:nome
+router.get("/pacientes/nome",pacientesController.buscarPorNome);
+
+// GET /pacientes/cpf
+router.get("/pacientes/cpf",pacientesController.buscarPorCpf);
+
 // GET /pacientes/:id
 router.get("/pacientes/:id", pacientesController.buscarPorId);
 

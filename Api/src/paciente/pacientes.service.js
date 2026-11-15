@@ -20,10 +20,20 @@ async function deletar(id) {
     return pacientesRepository.deletar(id);
 }
 
+async function buscarPorNome(nome) {
+    return pacientesRepository.buscarPorNome(nome);
+}
+
+async function buscarPorCpf(cpf) {
+    return pacientesRepository.buscarPorCpf(cpf);
+}
+
 module.exports = {
     listar,
     buscarPorId,
     criar,
     atualizar,
     deletar,
+    buscarPorNome,
+    buscarPorCpf,
 };

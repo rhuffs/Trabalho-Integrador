@@ -1,0 +1,12 @@
+Implementados busca por:
+[x] Nome
+
+[x] CPF
+
+Funcionalidades relacionadas que ainda virão
+Estas funcionalidades aparecem nos requisitos, mas dependem de outros módulos:
+[ ] Visualizar histórico de consultas (RF04).
+[ ] Consultar próximo agendamento (RF05).
+[ ] Visualizar odontograma (RF03).
+[ ] Consultar anamnese e exames (RF11, RF12 e RF13).
+[ ] Consultar receituários (RF09).
