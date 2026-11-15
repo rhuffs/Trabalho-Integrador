@@ -56,6 +56,17 @@ INSERT INTO permissao (descricao) VALUES
 INSERT INTO profissional_permissao (profissional_login, id_permissao)
 SELECT 'user@email.com', id FROM permissao;
 */
+CREATE TABLE profissionais(
+    id                  SERIAL PRIMARY KEY,
+    profissional_login  VARCHAR(100) NOT NULL,
+    nome_completo       VARCHAR(100) NOT NULL,
+    senha               VARCHAR(255) NOT NULL, /*Armazena hash*/
+  	telefone            VARCHAR(10) NOT NULL,
+    tipo_profissional enum_profissional_tipo NOT NULL,
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 
 INSERT INTO pacientes (
     nome,

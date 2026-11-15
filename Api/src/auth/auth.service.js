@@ -13,7 +13,7 @@ async function autenticarUsuario(profissional_login, senha) {
 
     // TODO: Comparar a senha informada com o hash armazenado
     // Dica: use bcrypt.compare(senha, usuario.senha)
-    const senhaValida = bcrypt.compare(senha, usuario.senha);
+    const senhaValida = await bcrypt.compare(senha, usuario.senha);
 
     // TODO: Retornar resultado baseado na validação
     if (senhaValida) {
