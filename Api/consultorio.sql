@@ -67,6 +67,15 @@ CREATE TABLE profissionais(
     updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE procedimentos(
+    procedimento_id      SERIAL PRIMARY KEY,
+    procedimento_nome    VARCHAR(100) NOT NULL,
+    procedimento_desc    TEXT,
+    preco                NUMERIC(10,2) NOT NULL DEFAULT 0.00,
+    created_at           TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at           TIMESTAMPTZ NOT NULL DEFAULT NOW()
+)
+
 
 INSERT INTO pacientes (
     nome,
@@ -107,3 +116,24 @@ INSERT INTO pacientes (
     TRUE,
     150.50
 );
+
+INSERT INTO procedimentos (procedimento_nome, procedimento_desc, preco)
+VALUES
+    ('Prótese Total', 'Dentadura', 2000.00),
+    ('Prótese Parcial', 'Aparelho que substitui um ou mais dentes ausentes', 2200.00),
+    ('Coroa de Porcelana', '(Unitária)Capa protetora feita sob medida para cobrir todo o dente danificado, enfraquecido, com grande perda de estrutura ou após um tratamento de canal', 2000.00),
+    ('Prótese Provisória', 'Solução temporária feita de resina acrílica ou bisacrílica utilizada para restaurar a estética, a fala e a mastigação enquanto a peça definitiva é produzida', 250.00),
+    ('Implante Convencional', 'É o método tradicional em que um pino de titânio (que funciona como a raiz do dente) é inserido no osso maxilar ou mandibular por meio de uma cirurgia', 1700.00),
+    ('Cicatrizador','É um componente protético temporário usado em implantes dentários',200),
+    ('Enxerto Gengival','(Unitária)é um procedimento cirúrgico periodontal realizado para adicionar volume, cobrir raízes expostas ou aumentar a faixa de tecido ao redor dos dentes e implantes',3000.00),
+    ('Faceta','(Unitária)lâminas finas aplicadas sobre a parte frontal dos dentes para corrigir cor, formato, tamanho ou pequenos desalinhamentos',2000.00),
+    ('Profilaxia de Protocolo','A profilaxia de uma prótese protocolo (prótese total fixa sobre implantes) é um procedimento especializado realizado no consultório odontológico para remover o biofilme e evitar infecções peri-implantares',300.00),
+    ('Prótese Protocolo','É uma reabilitação fixa de uma arcada dentária inteira, composta por 12 a 14 dentes presos em uma única estrutura que é parafusada sobre 4 a 6 implantes dentários',10000.00),
+    ('Prótese Protocolo Provisória','É uma arcada dentária fixa instalada logo após a cirurgia de colocação de implantes',3000.00),
+    ('Exodontia Simples','Procedimento odontológico para a remoção de um dente que está totalmente erupcionado na cavidade bucal',250.00),
+    ('Restauração de Resina','(Cada face do dente)tratamento odontológico usado para recuperar dentes com cáries, fraturas ou desgastes',150.00),
+    ('Clareamento','É um procedimento estético que utiliza agentes químicos para quebrar as moléculas de pigmento que escurecem o esmalte e a dentina',650.00),
+    ('Profilaxia Dentária','Limpeza profissional dos dentes',180.00),
+    ('Manutenção Ortodôntica','É o acompanhamento periódico para ativar, ajustar ou higienizar o aparelho',110.00),
+    ('Exodontia de Siso Incluso','Extração de siso incluso',650),
+    ('Radiografia Digital','É uma tecnologia de diagnóstico por imagem que substitui os filmes radiográficos tradicionais por sensores eletrônicos ou placas de fósforo',35);

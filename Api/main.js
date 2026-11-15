@@ -12,9 +12,11 @@ app.use(cors());
 const PORTA = 3001;
 const pacientesRoutes = require("./src/paciente/pacientes.routes");
 const authRoutes = require("./src/auth/auth.routes");
+const procedimentosRoutes = require("./src/procedimentos/procedimentos.routes");
 
 app.use(pacientesRoutes);
 app.use(authRoutes);
+app.use(procedimentosRoutes);
 
 app.get('/', (req, res) => {
 	res.json({
