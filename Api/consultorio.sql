@@ -41,12 +41,12 @@ CREATE TABLE permissao (
 
 CREATE TABLE profissional_permissao (
     profissional_login           VARCHAR(255) NOT NULL REFERENCES profissional(profissional_login) ON DELETE CASCADE,
-    id_permissao    BIGINT NOT NULL REFERENCES permissao(id) ON DELETE CASCADE,
+    permissao_id    BIGINT NOT NULL REFERENCES permissao(id) ON DELETE CASCADE,
     PRIMARY KEY (profissional_login, id_permissao)
 );
 
 CREATE INDEX idx_profissional_permissao_profissional_login ON profissional_permissao (profissional_login);
-CREATE INDEX idx_profissional_permissao_id_permissao ON profissional_permissao (id_permissao);
+CREATE INDEX idx_profissional_permissao_permissao_id ON profissional_permissao (permissao_id);
 
 INSERT INTO permissao (descricao) VALUES
     ('SECRETARIO'),
@@ -131,12 +131,12 @@ VALUES
 
 CREATE TABLE anamnese_item (
 	anamnese_id SERIAL PRIMARY KEY,
-	anamnese_nome VARCHAR(255)
+	anamnese_nome VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE consulta_anamnese (
-	anamnese_id INT,
-	consulta_id INT
+	anamnese_id INT NOT NULL,
+	consulta_id INT NOT NULL
 );
 
 CREATE TABLE consulta (
@@ -147,7 +147,7 @@ CREATE TABLE consulta (
 	consulta_alt_odonto TEXT,
 	consulta_att_paciente TEXT,
 	procedimento_id INT NOT NULL,
-	id_paciente INT NOT NULL
+	paciente_id INT NOT NULL
 );
 ALTER TABLE consulta ADD CONSTRAINT fk_consulta_procedimento_id FOREIGN KEY (procedimento_id) REFERENCES procedimentos (procedimento_id);
 ALTER TABLE consulta ADD CONSTRAINT fk_consulta_paciente FOREIGN KEY (id_paciente) REFERENCES pacientes (id);
@@ -155,3 +155,44 @@ ALTER TABLE consulta ADD CONSTRAINT fk_consulta_paciente FOREIGN KEY (id_pacient
 ALTER TABLE consulta_anamnese ADD CONSTRAINT pk_consulta_anamnese PRIMARY KEY (anamnese_id,consulta_id);
 ALTER TABLE consulta_anamnese ADD CONSTRAINT fk_consulta_anamnese_anamnese_id FOREIGN KEY (anamnese_id) REFERENCES anamnese_item (anamnese_id);
 ALTER TABLE consulta_anamnese ADD CONSTRAINT fk_consulta_anamnese_consulta_id FOREIGN KEY (consulta_id) REFERENCES consulta (consulta_id);
+
+INSERT INTO anamnese_item (anamnese_nome) VALUES 
+	('Gengivas Sangram Facilmente'),
+	('Retenção de Alimento Entre os Dentes'),
+	('Alergia à Aspirina'),
+	('Alergia à Penicilina'),
+	('Alergia à Sulfas'),
+	('Alergia à Iodo'),
+	('Alergia à Anestésicos'),
+	('Alergia à Sedativos e Barbitúricos'),
+	('Morde Lápis ou Caneta'),
+	('Rói Unhas'),
+	('Gravida mês 1'),
+	('Gravida mês 2'),
+	('Gravida mês 3'),
+	('Gravida mês 4'),
+	('Gravida mês 5'),
+	('Gravida mês 6'),
+	('Gravida mês 7'),
+	('Gravida mês 8'),
+	('Gravida mês 9'),
+	('Gravida mês 10'),
+	('Diabetes'),
+	('Tuberculose'),
+	('Artrite'),
+	('Problemas cardíacos'),
+	('Asma'),
+	('Hipertensão sanguínea'),
+	('Problemas renais'),
+	('Problemas hepáticos'),
+	('Dentes sensíveis ao frio'),
+	('Dentes sensíveis aos doces'),
+	('Higiene Regular'),
+	('Higiene Deficiente'),
+	('Halitose Moderada'),
+	('Halitose Forte'),
+	('Pouco Tártaro'),
+	('Muito Tártaro'),
+	('Gengivite'),
+	('Periodontite'),
+	('Mucosa Alterada');

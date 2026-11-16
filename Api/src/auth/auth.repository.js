@@ -21,6 +21,10 @@ async function criar(dados) {
         const perm = await Permissao.findOne({ where: {descricao: 'SECRETARIO'}, });
         const done = await ProfissionalPermissao.create({profissional_login: dados.profissional_login, id_permissao: perm.id });
     }
+    else {
+        const perm = await Permissao.findOne({ where: {descricao: 'DENTISTA'}, });
+        const done = await ProfissionalPermissao.create({profissional_login: dados.profissional_login, id_permissao: perm.id });
+    }
     return profissional;
 }
 
