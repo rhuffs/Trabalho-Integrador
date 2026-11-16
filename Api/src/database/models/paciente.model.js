@@ -84,12 +84,22 @@ const Paciente = sequelize.define(
             field: "local_nascimento"
         },
         sexo: {
-            type: DataTypes.STRING(15),
+            type: DataTypes.ENUM(
+                "Masculino",
+                "Feminino",
+                "Outro"
+            ),
             allowNull: false,
             field: "sexo"
         },
         estado_civil: {
-            type: DataTypes.STRING(20),
+            type: DataTypes.ENUM(
+                "Solteiro",
+                "Casado",
+                "Divorciado",
+                "Viúvo",
+                "União Estável"
+            ),
             allowNull: true,
             field: "estado_civil"
         },
