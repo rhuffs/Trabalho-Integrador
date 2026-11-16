@@ -1,3 +1,18 @@
+CREATE TYPE sexo_enum AS ENUM (
+    'Masculino',
+    'Feminino',
+    'Outro'
+);
+
+CREATE TYPE estado_civil_enum AS ENUM (
+    'Solteiro',
+    'Casado',
+    'Divorciado',
+    'Viúvo',
+    'União Estável'
+);
+
+
 CREATE TABLE pacientes (
     id               SERIAL PRIMARY KEY,
     nome             VARCHAR(100) NOT NULL,
@@ -10,8 +25,8 @@ CREATE TABLE pacientes (
  	cep 			 VARCHAR(8) NOT NULL,
  	telefone         VARCHAR(10) NOT NULL,
  	local_nascimento VARCHAR(20),
- 	sexo			 VARCHAR(15) NOT NULL,
- 	estado_civil     VARCHAR(20),
+ 	sexo			 sexo_enum NOT NULL,
+ 	estado_civil     estado_civil_enum,
  	email            VARCHAR(50) NOT NULL UNIQUE,
  	mae_pai          VARCHAR(100),
  	cpf 			 VARCHAR(14),
