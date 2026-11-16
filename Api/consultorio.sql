@@ -25,10 +25,10 @@ CREATE TABLE pacientes (
 CREATE TYPE enum_profissional_tipo AS ENUM ('DENTISTA', 'SECRETARIO');
 
 CREATE TABLE profissional (
-    profissional_login       VARCHAR(255) PRIMARY KEY,
+    profissional_login       VARCHAR(255) NOT NULL PRIMARY KEY,
     nome        VARCHAR(100) NOT NULL,
     senha       VARCHAR(255) NOT NULL,  -- hash bcrypt da senha
-	telefone    VARCHAR(255) NOT NULL,
+	telefone    VARCHAR(10) NOT NULL,
 	tipo_profissional enum_profissional_tipo NOT NULL
 );
 
@@ -50,6 +50,7 @@ CREATE INDEX idx_profissional_permissao_id_permissao ON profissional_permissao (
 
 INSERT INTO permissao (descricao) VALUES
     ('SECRETARIO'),
+    ('DENTISTA'),
     ('ADMIN');
 
 /* Exemplo add permissão pra alguém:
@@ -64,7 +65,7 @@ CREATE TABLE procedimentos(
     preco                NUMERIC(10,2) NOT NULL DEFAULT 0.00,
     created_at           TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at           TIMESTAMPTZ NOT NULL DEFAULT NOW()
-)
+);
 
 
 INSERT INTO pacientes (
@@ -127,3 +128,30 @@ VALUES
     ('Manutenção Ortodôntica','É o acompanhamento periódico para ativar, ajustar ou higienizar o aparelho',110.00),
     ('Exodontia de Siso Incluso','Extração de siso incluso',650),
     ('Radiografia Digital','É uma tecnologia de diagnóstico por imagem que substitui os filmes radiográficos tradicionais por sensores eletrônicos ou placas de fósforo',35);
+
+CREATE TABLE anamnese_item (
+	anamnese_id SERIAL PRIMARY KEY,
+	anamnese_nome VARCHAR(255)
+);
+
+CREATE TABLE consulta_anamnese (
+	anamnese_id INT,
+	consulta_id INT
+);
+
+CREATE TABLE consulta (
+	consulta_id SERIAL PRIMARY KEY,
+	consulta_desc TEXT,
+	consulta_valor NUMERIC(10,2) NOT NULL,
+	financeiro_id INT NOT NULL,
+	consulta_alt_odonto TEXT,
+	consulta_att_paciente TEXT,
+	procedimento_id INT NOT NULL,
+	id_paciente INT NOT NULL
+);
+ALTER TABLE consulta ADD CONSTRAINT fk_consulta_procedimento_id FOREIGN KEY (procedimento_id) REFERENCES procedimentos (procedimento_id);
+ALTER TABLE consulta ADD CONSTRAINT fk_consulta_paciente FOREIGN KEY (id_paciente) REFERENCES pacientes (id);
+
+ALTER TABLE consulta_anamnese ADD CONSTRAINT pk_consulta_anamnese PRIMARY KEY (anamnese_id,consulta_id);
+ALTER TABLE consulta_anamnese ADD CONSTRAINT fk_consulta_anamnese_anamnese_id FOREIGN KEY (anamnese_id) REFERENCES anamnese_item (anamnese_id);
+ALTER TABLE consulta_anamnese ADD CONSTRAINT fk_consulta_anamnese_consulta_id FOREIGN KEY (consulta_id) REFERENCES consulta (consulta_id);
