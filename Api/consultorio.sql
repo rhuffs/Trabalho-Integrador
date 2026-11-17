@@ -166,7 +166,6 @@ CREATE TABLE consulta (
 );
 ALTER TABLE consulta ADD CONSTRAINT fk_consulta_procedimento_id FOREIGN KEY (procedimento_id) REFERENCES procedimentos (procedimento_id);
 ALTER TABLE consulta ADD CONSTRAINT fk_consulta_paciente FOREIGN KEY (id_paciente) REFERENCES pacientes (id);
-
 ALTER TABLE consulta_anamnese ADD CONSTRAINT pk_consulta_anamnese PRIMARY KEY (anamnese_id,consulta_id);
 ALTER TABLE consulta_anamnese ADD CONSTRAINT fk_consulta_anamnese_anamnese_id FOREIGN KEY (anamnese_id) REFERENCES anamnese_item (anamnese_id);
 ALTER TABLE consulta_anamnese ADD CONSTRAINT fk_consulta_anamnese_consulta_id FOREIGN KEY (consulta_id) REFERENCES consulta (consulta_id);
@@ -211,3 +210,13 @@ INSERT INTO anamnese_item (anamnese_nome) VALUES
 	('Gengivite'),
 	('Periodontite'),
 	('Mucosa Alterada');
+
+
+CREATE TABLE financeiro (
+    financeiro_id SERIAL PRIMARY KEY,
+    paciente_id INTEGER NOT NULL REFERENCES pacientes(id),
+    financeiro_devendo NUMERIC(10,2) NOT NULL DEFAULT 0,
+    financeiro_pago NUMERIC(10,2) NOT NULL DEFAULT 0,
+    financeiro_saldo NUMERIC(10,2) NOT NULL DEFAULT 0,
+    data_movimentacao TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

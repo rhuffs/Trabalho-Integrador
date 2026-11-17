@@ -130,11 +130,6 @@ const Paciente = sequelize.define(
             allowNull: false,
             defaultValue: true,
             field: "autorizacao"
-        },
-        debito: {
-            type: DataTypes.FLOAT,
-            allowNull: true,
-            field: "debito"
         }
     },
     {
