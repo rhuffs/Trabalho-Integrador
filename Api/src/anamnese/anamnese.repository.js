@@ -16,7 +16,7 @@ async function listarAnamnese(consulta_id) {
     return ConsultaAnamnese.findAll({
         where: {consulta_id: consulta_id},
         include: [
-            { model: AnamneseItem, as: 'Itens' }
+            { model: AnamneseItem }
         ],
     });
 }

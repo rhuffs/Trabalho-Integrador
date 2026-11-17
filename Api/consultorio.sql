@@ -220,3 +220,16 @@ CREATE TABLE financeiro (
     financeiro_saldo NUMERIC(10,2) NOT NULL DEFAULT 0,
     data_movimentacao TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+CREATE TABLE horario(
+	horario_data DATE NOT NULL,
+	horario_hora TIME NOT NULL,
+	horario_inicio INTEGER,
+	horario_fim INTEGER,
+	horario_ocupado BOOL NOT NULL,
+	horario_compromisso VARCHAR(100)
+);
+
+ALTER TABLE horario ADD CONSTRAINT pk_horario PRIMARY KEY (horario_data, horario_hora);
+ALTER TABLE horario ADD CONSTRAINT fk_horario_inicio FOREIGN KEY (horario_inicio) REFERENCES consulta (consulta_id);
+ALTER TABLE horario ADD CONSTRAINT fk_horario_fim FOREIGN KEY (horario_fim) REFERENCES consulta (consulta_id);

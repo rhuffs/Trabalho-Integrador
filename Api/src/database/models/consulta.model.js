@@ -53,6 +53,14 @@ Consulta.associate = (models) => {
     Consulta.hasOne(models.Financeiro, {
         foreignKey: "financeiro_id",
     });
+    Consulta.hasOne(models.Horario, {
+        foreignKey: "horario_inicio",
+        as: "HorarioInicio",
+    });
+    Consulta.hasOne(models.Horario, {
+        foreignKey: "horario_fim",
+        as: "HorarioFim",
+    });
     Consulta.belongsTo(models.Paciente, {
         foreignKey: "paciente_id",
     });
