@@ -14,11 +14,13 @@ const pacientesRoutes = require("./src/paciente/pacientes.routes");
 const authRoutes = require("./src/auth/auth.routes");
 const anamneseRoutes = require("./src/anamnese/anamnese.routes");
 const procedimentosRoutes = require("./src/procedimentos/procedimentos.routes");
+const financeiroRoutes = require("./src/financeiro/financeiro.routes");
 
 app.use(pacientesRoutes);
 app.use(authRoutes);
 app.use(anamneseRoutes);
 app.use(procedimentosRoutes);
+app.use("/financeiro",financeiroRoutes);
 
 app.get('/', (req, res) => {
 	res.json({
