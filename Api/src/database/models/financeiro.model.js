@@ -65,4 +65,13 @@ const Financeiro = sequelize.define(
     }
 );
 
+Financeiro.associate = (models) => {
+    Financeiro.belongsTo(models.Consulta, {
+        foreignKey: "financeiro_id",
+    });
+    Financeiro.hasOne(models.Paciente, {
+        foreignKey: "paciente_id",
+    });
+};
+
 module.exports = Financeiro;

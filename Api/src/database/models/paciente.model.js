@@ -140,6 +140,15 @@ const Paciente = sequelize.define(
     }
 );
 
+Paciente.associate = (models) => {
+    Paciente.hasMany(models.Consulta, {
+        foreignKey: "paciente_id",
+    });
+    Paciente.hasMany(models.Financeiro, {
+        foreignKey: "paciente_id",
+    });
+};
+
 module.exports = Paciente;
 
 

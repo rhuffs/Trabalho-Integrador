@@ -46,10 +46,16 @@ const Consulta = sequelize.define(
 
 Consulta.associate = (models) => {
     Consulta.belongsToMany(models.AnamneseItem, {
-			through: models.ConsultaAnamnese,
-			foreignKey: "consulta_id",
-			otherKey: "anamnese_id",
-		});
+		through: models.ConsultaAnamnese,
+		foreignKey: "consulta_id",
+		otherKey: "anamnese_id",
+	});
+    Consulta.hasOne(models.Financeiro, {
+        foreignKey: "financeiro_id",
+    });
+    Consulta.hasOne(models.Paciente, {
+        foreignKey: "paciente_id",
+    });
 };
 
 module.exports = Consulta;
