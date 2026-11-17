@@ -53,7 +53,7 @@ Consulta.associate = (models) => {
     Consulta.hasOne(models.Financeiro, {
         foreignKey: "financeiro_id",
     });
-    Consulta.hasOne(models.Paciente, {
+    Consulta.belongsTo(models.Paciente, {
         foreignKey: "paciente_id",
     });
 };

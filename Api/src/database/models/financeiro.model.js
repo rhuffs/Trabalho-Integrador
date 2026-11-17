@@ -69,7 +69,7 @@ Financeiro.associate = (models) => {
     Financeiro.belongsTo(models.Consulta, {
         foreignKey: "financeiro_id",
     });
-    Financeiro.hasOne(models.Paciente, {
+    Financeiro.belongsTo(models.Paciente, {
         foreignKey: "paciente_id",
     });
 };
