@@ -32,7 +32,6 @@ CREATE TABLE pacientes (
  	cpf 			 VARCHAR(14),
  	rg 				 VARCHAR(20) NOT NULL UNIQUE,
  	autorizacao      BOOLEAN NOT NULL DEFAULT TRUE,
- 	debito 			 FLOAT, 
     created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -100,8 +99,7 @@ INSERT INTO pacientes (
     mae_pai,
     cpf,
     rg,
-    autorizacao,
-    debito
+    autorizacao
 ) VALUES (
     'João da Silva',
     '1995-06-15',
@@ -119,8 +117,7 @@ INSERT INTO pacientes (
     'Maria da Silva',
     '000.000.000-00',
     'TESTE-RG-001',
-    TRUE,
-    150.50
+    TRUE
 );
 
 INSERT INTO procedimentos (procedimento_nome, procedimento_desc, preco)
@@ -233,3 +230,19 @@ CREATE TABLE horario(
 ALTER TABLE horario ADD CONSTRAINT pk_horario PRIMARY KEY (horario_data, horario_hora);
 ALTER TABLE horario ADD CONSTRAINT fk_horario_inicio FOREIGN KEY (horario_inicio) REFERENCES consulta (consulta_id);
 ALTER TABLE horario ADD CONSTRAINT fk_horario_fim FOREIGN KEY (horario_fim) REFERENCES consulta (consulta_id);
+
+CREATE TABLE remedio(
+    remedio_id SERIAL PRIMARY KEY,
+    remedio_nome VARCHAR(255) NOT NULL,
+    remedio_desc TEXT
+);
+
+
+CREATE TABLE receituario(
+    receita_id SERIAL PRIMARY KEY,
+    receita_data_inicio  DATE,
+    receita_data_fim DATE,
+    receita_descricao TEXT,
+    remedio_id  INTEGER REFERENCES remedio(remedio_id),
+    consulta_id INTEGER NOT NULL REFERENCES consulta(consulta_id)
+);
