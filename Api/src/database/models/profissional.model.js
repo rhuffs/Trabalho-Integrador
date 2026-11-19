@@ -41,6 +41,9 @@ Profissional.associate = (models) => {
 			foreignKey: "profissional_login",
 			otherKey: "id_permissao",
 		});
+	Profissional.hasMany(models.Horario, {
+		foreignKey: "profissional_login",
+	})
 };
 
 module.exports = Profissional;

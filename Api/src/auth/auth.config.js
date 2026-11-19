@@ -157,6 +157,7 @@ const requirePermissaoMult = (descricaoPermissao) => {
                     );
                     if(perm) {
                         cond = true;
+                        req.perm = descricaoPermissao[i];
                         break;
                     }
                 }

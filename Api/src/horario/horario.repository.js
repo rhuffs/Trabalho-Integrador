@@ -1,46 +1,55 @@
 const { Op } = require("sequelize");
-const { Horario, Consulta } = require("../database/models");
+const { Horario, Consulta, Procedimento, Paciente } = require("../database/models");
 
-async function listarHorariosSemana(dia_segunda, dia_domingo) {
+async function listarHorariosSemana(profissional_login, dia_segunda, dia_domingo) {
     return Horario.findAll({ 
-        order: [["horario_data", "ASC"]],
         where: {
             horario_data: {
                 [Op.gte]: dia_segunda,
                 [Op.lte]: dia_domingo,
             },
+            profissional_login: profissional_login,
         },
-        include: [
-            { model: Consulta, as: "HorarioInicio"},
-            { model: Consulta, as: "HorarioFim"}
-        ]
+        order: [["profissional_login", "ASC"],["horario_data", "ASC"]],
+        include: [{ 
+                model: Consulta,
+                include: [
+                    {model: Paciente},
+                ],
+            },
+        ],
     });
 }
 
-async function buscarHorario(dados) {
-    return Horario.findOne({
+async function buscarHorario(profissional_login, dados) {
+    const hor = await Horario.findOne({
         where: {
             horario_data: dados.horario_data,
-            horario_hora: dados.horario_hora
+            horario_hora: dados.horario_hora,
+            profissional_login: profissional_login,
         },
+        include: [{ 
+                model: Consulta,
+                include: [
+                    {model: Paciente},
+                ],
+            },
+        ],
     });
+    return hor;
 }
 
 async function criarHorario(dados) {
     return Horario.create(dados);
 }
 
-async function atualizarHorario(horario_data, horario_hora, dados) {
+async function deletarHorario(profissional_login, dados) {
     const horario = await Horario.findOne({
-        where: {horario_data: horario_data},
-    });
-    if (!horario) return null;
-    return horario.update(dados);
-}
-
-async function deletarHorario(dados) {
-    const horario = await Horario.findOne({
-        where: {horario_data: dados.horario_data},
+        where: {
+            horario_data: dados.horario_data,
+            horario_hora: dados.horario_hora,
+            profissional_login: profissional_login,
+        },
     });
     if (!horario) return null;
     await horario.destroy();
@@ -51,6 +60,5 @@ module.exports = {
     listarHorariosSemana,
     buscarHorario,
     criarHorario,
-    atualizarHorario,
     deletarHorario,
 };

@@ -219,17 +219,16 @@ CREATE TABLE financeiro (
 );
 
 CREATE TABLE horario(
+    profissional_login VARCHAR(255) NOT NULL,
 	horario_data DATE NOT NULL,
 	horario_hora TIME NOT NULL,
-	horario_inicio INTEGER,
-	horario_fim INTEGER,
-	horario_ocupado BOOL NOT NULL,
+	horario_consulta INTEGER,
 	horario_compromisso VARCHAR(100)
 );
 
-ALTER TABLE horario ADD CONSTRAINT pk_horario PRIMARY KEY (horario_data, horario_hora);
-ALTER TABLE horario ADD CONSTRAINT fk_horario_inicio FOREIGN KEY (horario_inicio) REFERENCES consulta (consulta_id);
-ALTER TABLE horario ADD CONSTRAINT fk_horario_fim FOREIGN KEY (horario_fim) REFERENCES consulta (consulta_id);
+ALTER TABLE horario ADD CONSTRAINT pk_horario PRIMARY KEY (profissional_login, horario_data, horario_hora);
+ALTER TABLE horario ADD CONSTRAINT fk_horario_consulta FOREIGN KEY (horario_consulta) REFERENCES consulta (consulta_id);
+ALTER TABLE horario ADD CONSTRAINT fk_horario_dentista FOREIGN KEY (profissional_login) REFERENCES profissional (profissional_login);
 
 CREATE TABLE remedio(
     remedio_id SERIAL PRIMARY KEY,

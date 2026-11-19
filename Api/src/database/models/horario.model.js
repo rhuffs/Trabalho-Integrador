@@ -4,6 +4,11 @@ const sequelize = require("../connection");
 const Horario = sequelize.define(
     "Horario",
     {
+        profissional_login: {
+            type: DataTypes.STRING,
+            primaryKey: true,
+            allowNull: false,
+        },
         horario_data: { 
             type: DataTypes.DATEONLY,
             primaryKey: true,
@@ -14,15 +19,8 @@ const Horario = sequelize.define(
             primaryKey: true,
             allowNull: false,
         },
-        horario_inicio: {
+        horario_consulta: {
             type: DataTypes.INTEGER,
-        },
-        horario_fim: {
-            type: DataTypes.INTEGER,
-        },
-        horario_ocupado: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
         },
         horario_compromisso: {
             type: DataTypes.STRING,
@@ -39,12 +37,10 @@ const Horario = sequelize.define(
 
 Horario.associate = (models) => {
     Horario.belongsTo(models.Consulta, {
-        foreignKey: "horario_inicio",
-        as: "HorarioInicio",
+        foreignKey: "horario_consulta",
     });
-    Horario.belongsTo(models.Consulta, {
-        foreignKey: "horario_fim",
-        as: "HorarioFim",
+    Horario.belongsTo(models.Profissional, {
+        foreignKey: "profissional_login",
     });
 };
 
