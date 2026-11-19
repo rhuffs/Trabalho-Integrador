@@ -1,0 +1,65 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* Barra de navegação */
+.navbar {
+    width: 100%;
+    padding: 10px 30px;
+}
+
+/* Logo */
+.logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+/* Links */
+.navbar-nav.links-header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: clamp(100px, 300vw, 300px);
+    row-gap: 15px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Texto dos links */
+.links-header .nav-link {
+    font-size: clamp(16px, 1.5vw, 22px);
+    color: black;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.links-header .nav-link:hover,
+.links-header .nav-link.active {
+    color: #1976d2;
+}
+
+/* Espaço entre a logo e os links */
+.navbar-conteudo {
+    column-gap: clamp(50px, 15vw, 200px);
+    row-gap: 15px;
+}
+
+/* Espaço entre os links
+.navbar-nav.links-header {
+    column-gap: clamp(40px, 6vw, 100px);
+    row-gap: 15px;
+} */
+
+/* Link da página atual */
+.links-header .nav-link.active {
+    color: #1976d2;
+    font-weight: bold;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 8px;
+}

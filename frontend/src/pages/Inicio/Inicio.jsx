@@ -1,5 +1,11 @@
+import Header from "../../components/Header";
+
 export default function Inicio() {
     return (
-        <h1>Teste de rota : Tela incial</h1>
+        <>
+            <Header/>
+            <h1>Teste de rota : Tela incial</h1>
+        </>
+        
     );
 }

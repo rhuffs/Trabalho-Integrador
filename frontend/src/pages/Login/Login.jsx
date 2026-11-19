@@ -24,7 +24,7 @@ export default function Login(){
             localStorage.setItem("token", dados.token);
 
             console.log("Login realizado!");
-            navigate("/Inicio");
+            navigate("/agenda");
         } catch (error) {
             setErro("Usuário ou senha incorretos.");
         }
