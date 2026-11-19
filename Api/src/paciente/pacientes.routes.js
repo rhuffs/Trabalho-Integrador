@@ -1,27 +1,28 @@
 const express = require("express");
 const pacientesController = require("./pacientes.controller");
-
+const { requirePermissaoMult } = require("../auth/auth.config");
 const router = express.Router();
 
+
 // GET /pacientes
-router.get("/pacientes", pacientesController.listar);
-
-// GET /pacientes/:nome
-router.get("/pacientes/nome",pacientesController.buscarPorNome);
-
-// GET /pacientes/cpf
-router.get("/pacientes/cpf",pacientesController.buscarPorCpf);
+router.get("/pacientes",requirePermissaoMult(["SECRETARIO", "DENTISTA", "ADMIN"]), pacientesController.listar);
 
 // GET /pacientes/:id
-router.get("/pacientes/:id", pacientesController.buscarPorId);
+router.get("/pacientes/:id",requirePermissaoMult(["SECRETARIO", "DENTISTA", "ADMIN"]),pacientesController.buscarPorId);
+
+// GET /pacientes/:nome
+router.get("/pacientes/nome",requirePermissaoMult(["SECRETARIO", "DENTISTA", "ADMIN"]),pacientesController.buscarPorNome);
+
+// GET /pacientes/cpf
+router.get("/pacientes/cpf",requirePermissaoMult(["SECRETARIO", "DENTISTA", "ADMIN"]),pacientesController.buscarPorCpf);
 
 // POST /pacientes
-router.post("/pacientes", pacientesController.criar);
+router.post("/pacientes",requirePermissaoMult(["SECRETARIO", "DENTISTA", "ADMIN"]),pacientesController.criar);
 
 // PUT /pacientes/:id
-router.put("/pacientes/:id", pacientesController.atualizar);
+router.put("/pacientes/:id",requirePermissaoMult(["SECRETARIO", "DENTISTA", "ADMIN"]),pacientesController.atualizar);
 
 // DELETE /pacientes/:id
-router.delete("/pacientes/:id", pacientesController.deletar);
+router.delete("/pacientes/:id",requirePermissaoMult(["SECRETARIO", "DENTISTA", "ADMIN"]),pacientesController.deletar);
 
 module.exports = router;
