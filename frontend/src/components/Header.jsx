@@ -1,8 +1,17 @@
 import { NavLink } from "react-router-dom";
 import logo from "../assets/logo.jpg";
 import "./Header.css";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 
 export default function Header() {
+
+    function logout(){
+        localStorage.removeItem("token");
+        window.location.href = "/login"
+    }
+
+
     return (
         <nav className="navbar bg-white shadow-sm">
             <div className="container-fluid d-flex flex-wrap align-items-center justify-content-start px-4 navbar-conteudo">
@@ -32,6 +41,14 @@ export default function Header() {
                     </li>
 
                 </ul>
+
+                <Button onClick={logout}
+                    sx={{color : 'red',
+                        borderColor : 'black'
+                    }}>
+                    Logout
+                </Button>
+                
             </div>
         </nav>
     );
