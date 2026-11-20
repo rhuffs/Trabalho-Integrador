@@ -1,11 +1,26 @@
 const consultaService = require("./consulta.service");
 const verificarAcessoDentista = require("../auth/auth.service").verificarAcessoDentista;
+const verificarAcessoDentistaParaPaciente = require("../auth/auth.service").verificarAcessoDentistaParaPaciente;
 
 async function listarConsultas(req, res) {
     try {
-        const define = await !Object.hasOwn(req.body, "paciente_id");
+        const define = await !Object.hasOwn(req.body, "paciente_id"); 
         await verificarAcessoDentista(req, define);
         const consulta = await consultaService.listarConsultas(req.body);
+        return res.status(200).json(consulta);
+    } catch (erro) {
+        console.log("Erro ao buscar consulta:", erro);
+        return res.status(500).json({ erro: erro.message });
+    }
+}
+// rhuan: crei uma nova funcao para passar pela url
+
+async function listarConsultasPaciente(req, res) {
+    try {
+        await verificarAcessoDentistaParaPaciente(req, true);
+
+        const consulta = await consultaService.listarConsultas(req.query);
+
         return res.status(200).json(consulta);
     } catch (erro) {
         console.log("Erro ao buscar consulta:", erro);
@@ -43,7 +58,7 @@ async function adicionarDentistaConsulta(req, res) {
     }
     catch(erro){
         console.log("Erro ao adicionar dentista à consulta:", erro);
-        return res.status(500);json({erro: erro.message });
+        return res.status(500).json({erro: erro.message }); // antes o json estva fora do return ;)
     }
 }
 
@@ -88,4 +103,5 @@ module.exports = {
     deletarConsulta,
     adicionarDentistaConsulta,
     removerDentistaConsulta,
+    listarConsultasPaciente
 };
