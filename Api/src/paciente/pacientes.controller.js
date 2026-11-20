@@ -22,8 +22,17 @@ async function buscarPorId(req, res) {
 
 async function criar(req, res) {
     try {
-        const paciente = await pacientesService.criar(req.body);
+        const dadosPaciente = {
+            ...req.body,
+            odontograma: req.file
+                ? `uploads/odontogramas/${req.file.filename}`
+                : null
+        };
+
+        const paciente = await pacientesService.criar(dadosPaciente);
+
         return res.status(201).json(paciente);
+
     } catch (erro) {
         console.log("Erro ao criar paciente:", erro);
         return res.status(500).json({ erro: erro.message });

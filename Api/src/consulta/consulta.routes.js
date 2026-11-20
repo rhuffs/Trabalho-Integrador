@@ -7,19 +7,23 @@ const { requirePermissaoMult } = require("../auth/auth.config");
 const router = express.Router();
 
 // GET /consulta
-router.get("/consulta", requirePermissaoMult(['SECRETARIO','DENTISTA']) , consultaController.listarConsultas);
+router.get("/consulta", requirePermissaoMult(['SECRETARIO','DENTISTA','ADMIN']) , consultaController.listarConsultas);
+
+router.get("/consulta/paciente",requirePermissaoMult(["SECRETARIO", "DENTISTA",'ADMIN']),consultaController.listarConsultasPaciente); //Rhuan: criei uma nova para funcioonar na pagina de paciente
+
 
 router.get("/consulta/:id", requireJWTAuth ,consultaController.buscarConsulta);
 
 // POST /consulta
-router.post("/consulta", requirePermissaoMult(['SECRETARIO','DENTISTA']) , consultaController.criarConsulta);
+router.post("/consulta", requirePermissaoMult(['SECRETARIO','DENTISTA','ADMIN']) , consultaController.criarConsulta);
 
-router.post("/consulta/:id/dentista", requirePermissao('SECRETARIO') , consultaController.adicionarDentistaConsulta);
+router.post("/consulta/:id/dentista", requirePermissao(['SECRETARIO','ADMIN']) , consultaController.adicionarDentistaConsulta);
 
-router.put("/consulta/:id", requirePermissaoMult(['SECRETARIO','DENTISTA']) , consultaController.atualizarConsulta);
+router.put("/consulta/:id", requirePermissaoMult(['SECRETARIO','DENTISTA','ADMIN']) , consultaController.atualizarConsulta);
 // DELETE /consulta/:id
-router.delete("/consulta/:id", requirePermissaoMult(['SECRETARIO','DENTISTA']) , consultaController.deletarConsulta);
+router.delete("/consulta/:id", requirePermissaoMult(['SECRETARIO','DENTISTA','ADMIN']) , consultaController.deletarConsulta);
 
-router.delete("/consulta/:id/dentista", requirePermissao('SECRETARIO') , consultaController.removerDentistaConsulta);
+router.delete("/consulta/:id/dentista", requirePermissao('SECRETARIO','ADMIN') , consultaController.removerDentistaConsulta);
+
 
 module.exports = router;

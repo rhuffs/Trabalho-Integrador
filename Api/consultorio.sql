@@ -1,3 +1,6 @@
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+
 CREATE TYPE sexo_enum AS ENUM (
     'Masculino',
     'Feminino',
@@ -54,13 +57,16 @@ CREATE TABLE permissao (
 
 
 CREATE TABLE profissional_permissao (
-    profissional_login           VARCHAR(255) NOT NULL REFERENCES profissional(profissional_login) ON DELETE CASCADE,
-    permissao_id    BIGINT NOT NULL REFERENCES permissao(id) ON DELETE CASCADE,
+    profissional_login VARCHAR(255) NOT NULL REFERENCES profissional(profissional_login) ON DELETE CASCADE,
+    id_permissao BIGINT NOT NULL REFERENCES permissao(id) ON DELETE CASCADE,
     PRIMARY KEY (profissional_login, id_permissao)
 );
 
-CREATE INDEX idx_profissional_permissao_profissional_login ON profissional_permissao (profissional_login);
-CREATE INDEX idx_profissional_permissao_permissao_id ON profissional_permissao (permissao_id);
+CREATE INDEX idx_profissional_permissao_profissional_login
+ON profissional_permissao (profissional_login);
+
+CREATE INDEX idx_profissional_permissao_id_permissao
+ON profissional_permissao (id_permissao);
 
 INSERT INTO permissao (descricao) VALUES
     ('SECRETARIO'),
@@ -253,3 +259,9 @@ CREATE TABLE receituario(
     remedio_id  INTEGER REFERENCES remedio(remedio_id),
     consulta_id INTEGER NOT NULL REFERENCES consulta(consulta_id)
 );
+
+ALTER TABLE pacientes
+ADD COLUMN odontograma VARCHAR(500);
+
+ALTER TABLE pacientes
+ADD COLUMN ativo BOOLEAN NOT NULL DEFAULT TRUE;
