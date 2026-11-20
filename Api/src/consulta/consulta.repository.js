@@ -1,0 +1,151 @@
+const { Op } = require("sequelize");
+const { Horario, Consulta, Procedimento, Paciente, ProfissionalConsulta, Profissional, Financeiro } = require("../database/models");
+
+async function listarConsultasPaciente(paciente_id) {
+    return Consulta.findAll({ 
+        where: { paciente_id: paciente_id },
+        order: [["consulta_id", "ASC"]],
+        include: [
+            { model: Procedimento },
+            { 
+                model: Profissional,
+                attributes: ['nome', 'telefone'],
+                order: [["nome", "ASC"]],
+            },
+            { model: Financeiro},
+            { 
+                model: Horario,
+                order: [["horario_data", "ASC"],["horario_hora", "ASC"]],
+            },
+        ],
+    });
+}
+
+async function listarConsultasDentista(profissional_login) {
+    return Consulta.findAll({ 
+        order: [["consulta_id", "ASC"]],
+        include: [
+            { model: Procedimento, },
+            { 
+                model: Profissional,
+                attributes: ['nome', 'telefone'],
+                order: [["nome", "ASC"]],
+                where: { profissional_login: profissional_login },
+            },
+            { model: Financeiro},
+            { 
+                model: Horario,
+                order: [["horario_data", "ASC"],["horario_hora", "ASC"]],
+            },
+        ],
+    });
+}
+
+async function listarConsultasDentistaPaciente(profissional_login, paciente_id) {
+    return Consulta.findAll({ 
+        where: { paciente_id: paciente_id },
+        order: [["consulta_id", "ASC"]],
+        include: [
+            { model: Procedimento, },
+            { 
+                model: Profissional,
+                attributes: ['nome', 'telefone'],
+                order: [["nome", "ASC"]],
+                where: { profissional_login: profissional_login },
+            },
+            { model: Financeiro},
+            { 
+                model: Horario,
+                order: [["horario_data", "ASC"],["horario_hora", "ASC"]],
+            },
+        ],
+    });
+}
+
+async function buscarConsulta(consulta_id) {
+    return Consulta.findOne({
+        where: { consulta_id: consulta_id},
+        include: [
+            { model: Procedimento, },
+            { 
+                model: Profissional,
+                attributes: ['nome', 'telefone'],
+            },
+            { model: Financeiro},
+            { model: Horario },
+        ],
+    });
+}
+
+async function criarConsulta(dados) {
+    const resposta = [];
+    try{
+        const consulta = await Consulta.create(dados);
+        resposta.push(consulta);
+        dados.consulta_id = consulta.consulta_id;
+        const participa = await ProfissionalConsulta.create(dados);
+        resposta.push(participa);
+        return {
+            consulta: consulta,
+            participacao: participa,
+        }
+    }
+    catch(erro){
+        if( typeof resposta[0] !== 'undefined') await resposta[0].destroy();
+        if( typeof resposta[1] !== 'undefined') await resposta[1].destroy();
+        throw erro;
+    }
+}
+
+async function criarProfissionalConsulta(dados) {
+    return ProfissionalConsulta.create(dados);
+}
+
+async function deletarConsulta(consulta_id) {
+    const consulta = await Consulta.findByPk(consulta_id);
+    if (!consulta) return null;
+    await consulta.destroy();
+    return consulta;
+}
+
+async function atualizarConsulta(consulta_id, dados) {
+    const consulta = await Consulta.findByPk(consulta_id);
+    if (!consulta) return null;
+    await consulta.update(dados);
+    return consulta;
+}
+
+async function deletarProfissionalConsulta(profissional_login, consulta_id) {
+    const consulta = await ProfissionalConsulta.findOne({
+        where: { 
+            consulta_id: consulta_id,
+            profissional_login: profissional_login,
+        },
+    });
+    if (!consulta) return null;
+    await consulta.destroy();
+    return consulta;
+}
+
+async function verificarParticipacaoDentista(consulta_id, profissional_login){
+    const answ = await ProfissionalConsulta.findOne({
+        where: { 
+            consulta_id: consulta_id,
+            profissional_login: profissional_login,
+         },
+    });
+    return answ;
+}
+
+module.exports = {
+    listarConsultasPaciente,
+    listarConsultasDentista,
+    listarConsultasDentistaPaciente,
+    buscarConsulta,
+    criarConsulta,
+    criarProfissionalConsulta,
+    atualizarConsulta,
+    deletarConsulta,
+    deletarProfissionalConsulta,
+    verificarParticipacaoDentista,
+};

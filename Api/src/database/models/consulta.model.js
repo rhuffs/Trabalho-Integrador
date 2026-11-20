@@ -18,7 +18,6 @@ const Consulta = sequelize.define(
         },
         financeiro_id: {
             type: DataTypes.INTEGER,
-            allowNull: false,
         },
         consulta_alt_odonto: {
             type: DataTypes.STRING,
@@ -50,6 +49,11 @@ Consulta.associate = (models) => {
 		foreignKey: "consulta_id",
 		otherKey: "anamnese_id",
 	});
+    Consulta.belongsToMany(models.Profissional, {
+		through: models.ProfissionalConsulta,
+		foreignKey: "consulta_id",
+		otherKey: "profissional_login",
+	});
     Consulta.hasOne(models.Financeiro, {
         foreignKey: "financeiro_id",
     });
@@ -59,6 +63,9 @@ Consulta.associate = (models) => {
     Consulta.belongsTo(models.Paciente, {
         foreignKey: "paciente_id",
     });
+    Consulta.belongsTo(models.Procedimento, {
+        foreignKey: "procedimento_id",
+    })
 };
 
 module.exports = Consulta;

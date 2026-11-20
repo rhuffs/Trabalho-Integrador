@@ -155,7 +155,7 @@ CREATE TABLE consulta (
 	consulta_id SERIAL PRIMARY KEY,
 	consulta_desc TEXT,
 	consulta_valor NUMERIC(10,2) NOT NULL,
-	financeiro_id INT NOT NULL,
+	financeiro_id INT,
 	consulta_alt_odonto TEXT,
 	consulta_att_paciente TEXT,
 	procedimento_id INT NOT NULL,
@@ -166,6 +166,14 @@ ALTER TABLE consulta ADD CONSTRAINT fk_consulta_paciente FOREIGN KEY (paciente_i
 ALTER TABLE consulta_anamnese ADD CONSTRAINT pk_consulta_anamnese PRIMARY KEY (anamnese_id,consulta_id);
 ALTER TABLE consulta_anamnese ADD CONSTRAINT fk_consulta_anamnese_anamnese_id FOREIGN KEY (anamnese_id) REFERENCES anamnese_item (anamnese_id);
 ALTER TABLE consulta_anamnese ADD CONSTRAINT fk_consulta_anamnese_consulta_id FOREIGN KEY (consulta_id) REFERENCES consulta (consulta_id);
+
+CREATE TABLE profissional_consulta (
+    consulta_id INTEGER NOT NULL,
+    profissional_login VARCHAR(255) NOT NULL
+);
+ALTER TABLE profissional_consulta ADD CONSTRAINT fk_profissional_consulta_profissional FOREIGN KEY (profissional_login) REFERENCES profissional (profissional_login) ON DELETE CASCADE;
+ALTER TABLE profissional_consulta ADD CONSTRAINT fk_profissional_consulta_consulta FOREIGN KEY (consulta_id) REFERENCES consulta (consulta_id) ON DELETE CASCADE;
+ALTER TABLE profissional_consulta ADD CONSTRAINT pk_profissional_consulta PRIMARY KEY (consulta_id, profissional_login);
 
 INSERT INTO anamnese_item (anamnese_nome) VALUES 
 	('Gengivas Sangram Facilmente'),

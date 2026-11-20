@@ -37,10 +37,15 @@ const Profissional = sequelize.define(
 
 Profissional.associate = (models) => {
     Profissional.belongsToMany(models.Permissao, {
-			through: models.ProfissionalPermissao,
-			foreignKey: "profissional_login",
-			otherKey: "id_permissao",
-		});
+		through: models.ProfissionalPermissao,
+		foreignKey: "profissional_login",
+		otherKey: "id_permissao",
+	});
+	Profissional.belongsToMany(models.Consulta, {
+		through: models.ProfissionalConsulta,
+		foreignKey: "profissional_login",
+		otherKey: "consulta_id",
+	});
 	Profissional.hasMany(models.Horario, {
 		foreignKey: "profissional_login",
 	})

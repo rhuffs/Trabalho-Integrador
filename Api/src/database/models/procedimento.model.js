@@ -45,6 +45,12 @@ const Procedimento = sequelize.define(
     }
 );
 
+Procedimento.associate = (models) => {
+    Procedimento.hasMany(models.Consulta, {
+        foreignKey: "procedimento_id",
+    });
+};
+
 module.exports = Procedimento;
 
 

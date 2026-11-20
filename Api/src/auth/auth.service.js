@@ -102,6 +102,13 @@ async function buscarNome(nome) {
     return authRepository.buscarNome(nome);
 }
 
+async function verificarAcessoDentista(req, define) {
+    if(req.perm != 'SECRETARIO') {
+        if(Object.hasOwn(req.body, "profissional_login") && req.body.profissional_login != req.user.profissional_login) throw new Error("Permissão inválida", {cause: "Dentistas não podem mexer nas consultas para outros dentista"});
+        if(define) req.body.profissional_login = req.user.profissional_login;
+    }
+}
+
 module.exports = {
     autenticarUsuario,
     criarNovoUsuario,
@@ -112,4 +119,5 @@ module.exports = {
     listar,
     buscarLogin,
     buscarNome,
+    verificarAcessoDentista,
 };

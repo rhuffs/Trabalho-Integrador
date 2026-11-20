@@ -18,7 +18,7 @@ const financeiroRoutes = require("./src/financeiro/financeiro.routes");
 const remedioRoutes = require("./src/remedio/remedio.routes");
 const horarioRoutes = require("./src/horario/horario.routes");
 const receituarioRoutes = require("./src/receituario/receituario.routes");
-
+const consultaRoutes = require("./src/consulta/consulta.routes");
 
 app.use(pacientesRoutes);
 app.use(authRoutes);
@@ -28,6 +28,7 @@ app.use(horarioRoutes);
 app.use("/financeiro",financeiroRoutes);
 app.use(remedioRoutes);
 app.use(receituarioRoutes);
+app.use(consultaRoutes);
 
 app.get('/', (req, res) => {
 	res.json({

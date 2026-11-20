@@ -64,7 +64,7 @@ async function listar() {
 }
 
 async function buscarLogin(profissional_login) {
-    return Profissional.findByPk(profissional_login);
+    return await Profissional.findByPk(profissional_login);
 }
 
 async function buscarNome(nome) {
