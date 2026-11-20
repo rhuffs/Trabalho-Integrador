@@ -1,9 +1,16 @@
-const {Financeiro} = require("../database/models");
+const { Financeiro, Paciente } = require("../database/models");
 
 async function listar() {
-    return await Financeiro.findAll();
+    return await Financeiro.findAll({
+        include: [
+            {
+                model: Paciente,
+                attributes: ["id", "nome"]
+            }
+        ],
+        order: [["data_movimentacao", "DESC"]]
+    });
 }
-
 async function buscarPorId(id) {
     return await Financeiro.findByPk(id);
 }

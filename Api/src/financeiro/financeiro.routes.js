@@ -8,42 +8,42 @@ const router = express.Router();
 // GET /financeiro
 router.get(
     "/",
-    requirePermissaoMult(["SECRETARIO", "DENTISTA"]),
+    requirePermissaoMult(["SECRETARIO", "DENTISTA", "ADMIN"]),
     FinanceiroController.listar
 );
 
 // GET /financeiro/paciente/:paciente_id
 router.get(
     "/paciente/:paciente_id",
-    requirePermissaoMult(["SECRETARIO", "DENTISTA"]),
+    requirePermissaoMult(["SECRETARIO", "DENTISTA", "ADMIN"]),
     FinanceiroController.buscarPorPaciente
 );
 
 // GET /financeiro/saldo/:paciente_id
 router.get(
     "/saldo/:paciente_id",
-    requirePermissaoMult(["SECRETARIO", "DENTISTA"]),
+    requirePermissaoMult(["SECRETARIO", "DENTISTA", "ADMIN"]),
     FinanceiroController.calcularSaldo
 );
 
 // GET /financeiro/:id
 router.get(
     "/:id",
-    requirePermissaoMult(["SECRETARIO", "DENTISTA"]),
+    requirePermissaoMult(["SECRETARIO", "DENTISTA", "ADMIN"]),
     FinanceiroController.buscarPorId
 );
 
 // POST /financeiro/debito
 router.post(
     "/debito",
-    requirePermissaoMult(["SECRETARIO", "DENTISTA"]),
+    requirePermissaoMult(["SECRETARIO", "DENTISTA", "ADMIN"]),
     FinanceiroController.registrarDebito
 );
 
 // POST /financeiro/credito
 router.post(
     "/credito",
-    requirePermissaoMult(["SECRETARIO", "DENTISTA"]),
+    requirePermissaoMult(["SECRETARIO", "DENTISTA", "ADMIN"]),
     FinanceiroController.registrarCredito
 );
 
