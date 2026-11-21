@@ -39,19 +39,25 @@ async function login(req, res) {
     }
 }
 
-async function logout(req, res) {
-    try {
-        req.logout(function (err) {
-            if (err) {
-                console.log("Erro ao fazer logout:", err);
-                return res.status(500).json({ erro: err.message });
-            }
-            return res.status(200).json({ message: "Logout successful" });
-        });
-    } catch (erro) {
-        console.log("Erro ao fazer logout:", erro);
-        return res.status(500).json({ erro: erro.message });
-    }
+// async function logout(req, res) {
+//     try {
+//         req.logout(function (err) {
+//             if (err) {
+//                 console.log("Erro ao fazer logout:", err);
+//                 return res.status(500).json({ erro: err.message });
+//             }
+//             return res.status(200).json({ message: "Logout successful" });
+//         });
+//     } catch (erro) {
+//         console.log("Erro ao fazer logout:", erro);
+//         return res.status(500).json({ erro: erro.message });
+//     }
+// }
+
+function logout(req, res) {  // função de logout por token
+    return res.status(200).json({
+        message: "Logout successful"
+    });
 }
 
 async function criarUsuario(req, res) {
