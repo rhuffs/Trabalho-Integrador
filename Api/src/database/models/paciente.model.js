@@ -74,7 +74,7 @@ const Paciente = sequelize.define(
             field: "cep"
         },
         telefone: {
-            type: DataTypes.STRING(10),
+            type: DataTypes.STRING(15),
             allowNull: false,
             field: "telefone"
         },
@@ -130,6 +130,15 @@ const Paciente = sequelize.define(
             allowNull: false,
             defaultValue: true,
             field: "autorizacao"
+        },
+        odontograma : {
+            type : DataTypes.STRING(500),
+            allowNull: true,
+            field : "odontograma"
+        },
+        ativo: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: true
         }
     },
     {

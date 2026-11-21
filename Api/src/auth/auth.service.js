@@ -113,6 +113,23 @@ async function verificarAcessoDentista(req, define) {
     }
 }
 
+async function verificarAcessoDentistaParaPaciente(req, define) {
+    if (req.perm != 'SECRETARIO') {
+        if (
+            Object.hasOwn(req.query, "profissional_login") &&
+            req.query.profissional_login != req.user.profissional_login
+        ) {
+            throw new Error("Permissão inválida", {
+                cause: "Dentistas não podem mexer nas consultas para outros dentistas"
+            });
+        }
+
+        if (define) {
+            req.query.profissional_login = req.user.profissional_login;
+        }
+    }
+}
+
 module.exports = {
     autenticarUsuario,
     criarNovoUsuario,
@@ -125,4 +142,5 @@ module.exports = {
     buscarLogin,
     buscarNome,
     verificarAcessoDentista,
+    verificarAcessoDentistaParaPaciente
 };
