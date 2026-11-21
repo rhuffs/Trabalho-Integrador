@@ -3,10 +3,12 @@ import "./Agenda.css";
 import Header from "../../components/Header";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
+import Box from '@mui/material/Box';
 import Button from "@mui/material/Button";
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -14,12 +16,38 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { VerificaPermissao } from "../Login/Login";
 import { listarDentistas } from "../../services/authService";
+import { listarPacientes } from "../../services/pacientesService";
+import { listarProcedimentos } from "../../services/procedimentosService";
+import { cadastrarConsulta } from "../../services/consultaService";
+
+function getProcedimentoId(procedimento) {
+    return procedimento.procedimento_id;
+}
+
+function getPacienteId(paciente) {
+    return paciente.id;
+}
+
+function getDentistaLogin(dentista){
+    return dentista.profissional_login;
+}
 
 export default function Agenda(){
     const [categoria, setCategoria] = useState(0);
     const [dentistas, setDentistas] = useState(null);
+    const [pacientes, setPacientes] = useState(null);
+    const [procedimentos, setProcedimentos] = useState(null);
     const [dentistaConsultas, setDentistaConsultas] = useState(0);
+    const [procedimentoRegistro, setProcedimentoRegistro] = useState(null);
+    const [pacienteRegistro, setPacienteRegistro] = useState(null);
+    const [dentistaRegistro, setDentistaRegistro] = useState(null);
+    const [valorRegistro, setValorRegistro] = useState("");
+    const [dataRegistro, setDataRegistro] = useState("");
+    const [inicioRegistro, setInicioRegistro] = useState("");
+    const [fimRegistro, setFimRegistro] = useState("");
+    const [descRegistro, setDescRegistro] = useState("");
     const [openRegistrar, setOpenRegistrar] = useState(false);
+    const [carregando, setCarregando] = useState(false);
 
   const handleClickOpenRegistrar = () => {
     const botao = document.activeElement;
@@ -28,16 +56,40 @@ export default function Agenda(){
   };
 
   const handleCloseRegistrar = () => {
+    setPacienteRegistro(null);
+    setProcedimentoRegistro(null);
+    setDentistaRegistro(null);
+    setValorRegistro("");
+    setDescRegistro("");
+    setDataRegistro("");
+    setInicioRegistro("");
+    setFimRegistro("");
     setOpenRegistrar(false);
   };
 
   const handleSubmit = (event) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const formJson = Object.fromEntries((formData).entries());
-    const email = formJson.email;
-    console.log(email);
-    handleCloseRegistrar();
+    try{
+        setCarregando(true);
+        const dados = {
+            paciente_id: pacienteRegistro,
+            procedimento_id: procedimentoRegistro,
+            profissional_login: dentistaRegistro,
+            consulta_valor: valorRegistro,
+            consulta_desc: descRegistro,
+            horario_data: dataRegistro,
+            horario_hora: inicioRegistro,
+            horario_fim: fimRegistro,
+        }
+        console.log(dados);
+        cadastrarConsulta(dados);
+    }
+    catch(error){
+        console.error("Erro ao cadastrar consulta:", erro);
+        alert(erro.response?.data?.erro || "Erro ao cadastrar consulta.");
+    } finally {
+        setCarregando(false);
+        handleCloseRegistrar();
+    }
   };
 
     useEffect(() => {
@@ -48,6 +100,7 @@ export default function Agenda(){
                     let i = 0;
                     for(let x of response){
                         x.id = i;
+                        x.label = x.nome;
                         i++; 
                     }
                     setDentistas(response);
@@ -63,7 +116,39 @@ export default function Agenda(){
             }
         }
 
+        async function buscarTodosPacientes() {
+            try{
+                const response = await listarPacientes();
+                for(let x of response){
+                    x.label = x.nome + " (" + x.cpf + ")";
+                }
+                setPacientes(response);
+            }
+            catch (error) {
+                console.log(error);
+                setPacientes(null);
+                // COLOCAR UM ALERT AQUI
+            }
+        }
+
+        async function buscarTodosProcedimentos() {
+            try{
+                const response = await listarProcedimentos();
+                for(let x of response){
+                    x.label = x.procedimento_nome;
+                }
+                setProcedimentos(response);
+            }
+            catch (error) {
+                console.log(error);
+                setProcedimentos(null);
+                // COLOCAR UM ALERT AQUI
+            }
+        }
+
         buscarTodosDentistas();
+        buscarTodosPacientes();
+        buscarTodosProcedimentos();
     },
     [
 
@@ -81,50 +166,112 @@ export default function Agenda(){
         <Stack className="pagina-agenda">
             <Header/>
             <h1>Agenda</h1>
+            <Dialog open={openRegistrar} onClose={handleCloseRegistrar}>
+                <DialogTitle>Registrar Consulta</DialogTitle>
+                <DialogContent>
+                <DialogContentText>
+                    Preencha os dados da consulta abaixo:
+                </DialogContentText>
+                <Box
+                    component="form"
+                    sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' } }}
+                    noValidate
+                    autoComplete="off"
+                >
+                    <div>
+                        <Autocomplete
+                        disablePortal
+                        options={pacientes}
+                        sx={{ width: 300 }}
+                        renderInput={(params) => <TextField {...params} label="Paciente" />}
+                        name="paciente_id"
+                        getOptionValue={getPacienteId}
+                        value={pacienteRegistro}
+                        onChange={(_event, newValue) => {
+                            setPacienteRegistro(newValue);
+                        }}
+                        />
+                        <Autocomplete
+                        disablePortal
+                        options={procedimentos}
+                        sx={{ width: 300 }}
+                        renderInput={(params) => <TextField {...params} label="Procedimento" />}
+                        name="procedimento_id"
+                        getOptionValue={getProcedimentoId}
+                        value={procedimentoRegistro}
+                        onChange={(_event, newValue) => {
+                            setProcedimentoRegistro(newValue);
+                        }}
+                        />
+                    </div>
+                    <div>
+                        { VerificaPermissao("SECRETARIO") && <Autocomplete
+                        disablePortal
+                        options={dentistas}
+                        sx={{ width: 300 }}
+                        renderInput={(params) => <TextField {...params} label="Dentista" />}
+                        getOptionValue={getDentistaLogin}
+                        value={dentistaRegistro}
+                        onChange={(_event, newValue) => {
+                            setDentistaRegistro(newValue);
+                        }}
+                        />}
+                        <TextField 
+                        value={valorRegistro}
+                        onChange={(event) => {
+                            setValorRegistro(event.target.value);
+                        }}
+                        label="Valor"
+                        />
+                    </div>
+                    <div> 
+                        <TextField 
+                        value={dataRegistro}
+                        onChange={(event) => {
+                            setDataRegistro(event.target.value);
+                        }}
+                        label="Data da Consulta"
+                        />
+                    </div>
+                    <div> 
+                        <TextField 
+                        value={inicioRegistro}
+                        onChange={(event) => {
+                            setInicioRegistro(event.target.value);
+                        }}
+                        label="Inicio da Consulta"
+                        />
+                        <TextField 
+                        value={fimRegistro}
+                        onChange={(event) => {
+                            setFimRegistro(event.target.value);
+                        }}
+                        label="Fim da Consulta"
+                        />
+                    </div>
+                    <div> 
+                        <TextField 
+                        value={descRegistro}
+                        onChange={(event) => {
+                            setDescRegistro(event.target.value);
+                        }}
+                        multiline
+                        label="Descrição da Consulta"
+                        />
+                    </div>
+                </Box>
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={handleCloseRegistrar}>Cancelar</Button>
+                <Button onClick={handleSubmit}>
+                    {carregando ? "Registrando..." : "Registrar"}
+                </Button>
+                </DialogActions>
+            </Dialog>
             <Grid container spacing={9} sx={{justifyContent: "space-between",}}>
                 <Grid size={1}></Grid>
                 <Grid size="grow">
                     <Button variant="contained" onClick={handleClickOpenRegistrar}>Registrar Consulta</Button>
-                    <Dialog open={openRegistrar} onClose={handleCloseRegistrar}>
-                        <DialogTitle>Subscribe</DialogTitle>
-                        <DialogContent>
-                        <DialogContentText>
-                            To subscribe to this website, please enter your email address here. We
-                            will send updates occasionally.
-                        </DialogContentText>
-                        <form onSubmit={handleSubmit} id="subscription-form">
-                            <TextField
-                            autoFocus
-                            required
-                            margin="dense"
-                            id="name"
-                            name="email"
-                            label="Email Address"
-                            type="email"
-                            fullWidth
-                            variant="standard"
-                            />
-                            <TextField
-                            autoFocus
-                            required
-                            margin="dense"
-                            id="name"
-                            name="email"
-                            label="Email Address"
-                            type="email"
-                            fullWidth
-                            variant="standard"
-                            />
-                        </form>
-                        </DialogContent>
-                        <DialogActions>
-                        <Button onClick={handleCloseRegistrar}>Cancel</Button>
-                        <Button type="submit" form="subscription-form">
-                            Subscribe
-                        </Button>
-                        </DialogActions>
-                    </Dialog>
-
                 </Grid>
                 <Grid size="grow">
                     { dentistas && <Select
