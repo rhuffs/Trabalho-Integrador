@@ -43,10 +43,10 @@ async function buscarUsuarioPermissao(profissional_login, idPermissao) {
     });
 }
 
-async function listarPermissoesUsuario(email) {
+async function listarPermissoesUsuario(profissional_login) {
     const permissoes = await ProfissionalPermissao.findAll({
         where: {
-            email: email,
+            profissional_login: profissional_login,
         },
         include: [
             {
@@ -61,6 +61,13 @@ async function listarPermissoesUsuario(email) {
 
 async function listar() {
     return Profissional.findAll({ order: [["nome", "ASC"]] });
+}
+
+async function listarDentistas() {
+    return Profissional.findAll({
+         order: [["nome", "ASC"]],
+         where: { tipo_profissional: "DENTISTA" },
+         });
 }
 
 async function buscarLogin(profissional_login) {
@@ -79,6 +86,7 @@ module.exports = {
     listarPermissoesUsuario,
     deletar,
     listar,
+    listarDentistas,
     buscarLogin,
     buscarNome,
 };

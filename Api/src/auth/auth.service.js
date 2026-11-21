@@ -94,6 +94,10 @@ async function listar(){
     return authRepository.listar();
 }
 
+async function listarDentistas(){
+    return authRepository.listarDentistas();
+}
+
 async function buscarLogin(profissional_login) {
     return authRepository.buscarLogin(profissional_login);
 }
@@ -117,6 +121,7 @@ module.exports = {
     obterPermissoesUsuario,
     deletarUsuario,
     listar,
+    listarDentistas,
     buscarLogin,
     buscarNome,
     verificarAcessoDentista,

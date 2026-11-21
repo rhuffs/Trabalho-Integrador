@@ -18,6 +18,8 @@ router.delete("/deletarUsuario", requirePermissao("ADMIN"), authController.delet
 
 router.get("/listarUsuarios", requirePermissaoMult(["SECRETARIO","ADMIN"]), authController.listarUsuarios);
 
+router.get("/listarDentistas", requirePermissaoMult(["SECRETARIO","ADMIN"]), authController.listarDentistas);
+
 router.get("/buscarUsuarioLogin", requirePermissaoMult(["SECRETARIO","ADMIN"]), authController.buscarUsuarioLogin);
 
 router.get("/buscarUsuariosNome", requirePermissaoMult(["SECRETARIO","ADMIN"]), authController.buscarUsuariosNome);

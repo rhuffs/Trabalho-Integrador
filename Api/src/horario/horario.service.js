@@ -58,7 +58,7 @@ async function checarValidadeTempo(string) {
     }
     const horas = Number(tempo[0]);
     const minutos = Number(tempo[1]);
-    if(!Number.isFinite(horas) || !Number.isFinite(minutos) || horas < 0 || horas > 23 || (minutos != 30 && minutos != 0)){
+    if(!Number.isFinite(horas) || !Number.isFinite(minutos) || horas < 7 || horas > 23 || (minutos != 30 && minutos != 0)){
         throw new Error("Formato Inválido", {cause: "Formato Inválido"});
     }
     return [horas,minutos];
