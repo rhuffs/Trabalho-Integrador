@@ -6,6 +6,13 @@ import { login } from "../../services/authService";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
 
+export function VerificaPermissao(perm) {
+    const autoriza = localStorage.getItem("permissoes").split(",");
+    for(let x of autoriza){
+        if(x == perm) return true;
+    }
+    return false;
+}
 
 export default function Login(){
     
@@ -20,12 +27,15 @@ export default function Login(){
 
         try {
             const dados = await login(username, password);
-
+            const perms = [];
+            for(let x of dados.permissoes){
+                perms.push(x.descricao);
+            }
             localStorage.setItem("token", dados.token);
-
-            console.log("Login realizado!");
+            localStorage.setItem("permissoes", perms);
             navigate("/agenda");
         } catch (error) {
+            console.log(error);
             setErro("Usuário ou senha incorretos.");
         }
     }
