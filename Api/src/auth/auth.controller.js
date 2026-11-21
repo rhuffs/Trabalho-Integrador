@@ -54,7 +54,7 @@ async function login(req, res) {
 //     }
 // }
 
-function logout(req, res) {
+function logout(req, res) {  // função de logout por token
     return res.status(200).json({
         message: "Logout successful"
     });
