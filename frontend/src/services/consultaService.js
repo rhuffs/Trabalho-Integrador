@@ -8,10 +8,11 @@ export async function cadastrarConsulta(dados) {
     return resposta.data;
 }
 
-export async function listarConsultasSemana(dia, profissional_login) {
-    const resposta = await api.get("/consulta/paciente", {
-        params: { dia, profissional_login }
-    });
+export async function listarConsultasSemana(dados) {
+    const payload = Object.fromEntries(
+        Object.entries(dados).filter(([_, valor]) => valor !== null && valor !== undefined)
+    );
+    const resposta = await api.post("/horario/semana", payload);
     return resposta.data;
 }
 
