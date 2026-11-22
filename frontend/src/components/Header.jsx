@@ -3,6 +3,7 @@ import logo from "../assets/logo.jpg";
 import "./Header.css";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import { VerificaPermissao } from "../pages/Login/Login";
 
 export default function Header() {
 
@@ -39,6 +40,14 @@ export default function Header() {
                             Financeiro
                         </NavLink>
                     </li>
+
+                    {VerificaPermissao("ADMIN") && (
+                        <li className="nav-item">
+                            <NavLink className="nav-link" to="/profissionais">
+                                Profissionais
+                            </NavLink>
+                        </li>
+                    )}
 
                 </ul>
 

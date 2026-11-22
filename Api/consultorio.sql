@@ -265,3 +265,25 @@ ADD COLUMN odontograma VARCHAR(500);
 
 ALTER TABLE pacientes
 ADD COLUMN ativo BOOLEAN NOT NULL DEFAULT TRUE;
+
+INSERT INTO profissional (
+    profissional_login,
+    nome,
+    senha,
+    telefone,
+    tipo_profissional
+) VALUES (
+    'ADMIN',
+    'admin',
+    '$2b$10$norKjBzgijf0JN.I6nt1Puyv8ZQzex6551pxLyPFLrQ99L3jLOZNa',  /* a senha é 123 ;)*/
+    '4999999999',
+    'SECRETARIO'
+);
+
+INSERT INTO profissional_permissao (
+    profissional_login,
+    id_permissao
+)
+SELECT 'ADMIN', id
+FROM permissao
+WHERE descricao = 'ADMIN';
