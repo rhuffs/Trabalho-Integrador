@@ -106,7 +106,7 @@ export default function Agenda(){
   const handleCloseRegistrar = () => {
     setPacienteRegistro(null);
     setProcedimentoRegistro(null);
-    setDentistaRegistro("");
+    setDentistaRegistro(null);
     setValorRegistro("");
     setDescRegistro("");
     setDataRegistro("");
@@ -115,7 +115,11 @@ export default function Agenda(){
     setOpenRegistrar(false);
   };
 
-  const handleSubmit = (event) => {
+  const Atualiza = () => {
+    setAtualizaAgenda(!atualizaAgenda);
+  }
+
+  async function handleSubmit(event) {
     try{
         setCarregando(true);
         const dados = {
@@ -129,8 +133,8 @@ export default function Agenda(){
             horario_fim: fimRegistro,
         }
         console.log(dados);
-        cadastrarConsulta(dados);
-        setAtualizaAgenda(!atualizaAgenda);
+        await cadastrarConsulta(dados);
+        Atualiza();
     }
     catch(error){
         console.error("Erro ao cadastrar consulta:", erro);
@@ -139,6 +143,7 @@ export default function Agenda(){
         setCarregando(false);
         handleCloseRegistrar();
     }
+    Atualiza();
   };
 
   const getLabelAgenda = (categoria, horario) => {
@@ -218,7 +223,7 @@ export default function Agenda(){
                 const agenda = createAgenda();
                 for(let x of response){
                     const tempos = x.horario_hora.split(":");
-                    const dataList = x.horario_data.split("/");
+                    const dataList = x.horario_data.split("-");
                     const linha =  ((Number(tempos[0])-7)*2) + (Number(tempos[1])/30);
                     const string = getLabelAgenda(categoria, x)
                     modifyRow(agenda, Number(dataList[2]) - segunda, linha, string);
@@ -235,19 +240,19 @@ export default function Agenda(){
         //buscarTodosDentistas();
         buscarTodosPacientes();
         buscarTodosProcedimentos();
-        buscarConsultasSemana(atualizaAgenda);
+        buscarConsultasSemana();
     },
     [
         atualizaAgenda
     ]);
 
     const handleChangeCategoria = (event) => {
-        setAtualizaAgenda(!atualizaAgenda);
+        Atualiza();
         setCategoria(event.target.value);
     };
 
     const handleChangeDentistaConsultas = (event) => {
-        setAtualizaAgenda(!atualizaAgenda);
+        Atualiza();
         setDentistaConsultas(event.target.value);
     };
 
@@ -311,6 +316,7 @@ export default function Agenda(){
                             setValorRegistro(event.target.value);
                         }}
                         label="Valor"
+                        placeholder="x.xx"
                         />
                     </div>
                     <div> 
@@ -320,6 +326,7 @@ export default function Agenda(){
                             setDataRegistro(event.target.value);
                         }}
                         label="Data da Consulta"
+                        placeholder="ano/mes/dia"
                         />
                     </div>
                     <div> 
@@ -329,6 +336,7 @@ export default function Agenda(){
                             setInicioRegistro(event.target.value);
                         }}
                         label="Inicio da Consulta"
+                        placeholder="hora:00 ou hora:30"
                         />
                         <TextField 
                         value={fimRegistro}
@@ -336,6 +344,7 @@ export default function Agenda(){
                             setFimRegistro(event.target.value);
                         }}
                         label="Fim da Consulta"
+                        placeholder="hora:00 ou hora:30"
                         />
                     </div>
                     <div> 
