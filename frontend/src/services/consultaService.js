@@ -16,6 +16,11 @@ export async function listarConsultasSemana(dados) {
     return resposta.data;
 }
 
+export async function buscarConsulta(id){
+    const resposta = await api.post(`/consulta/${id}`, {});
+    return resposta.data;
+}
+
 export async function atualizarConsulta(id, dados) {
     const resposta = await api.patch(`/consulta/${id}`, dados);
     return resposta.data;

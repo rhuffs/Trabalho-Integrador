@@ -25,7 +25,7 @@ import { VerificaPermissao } from "../Login/Login";
 import { listarDentistas } from "../../services/authService";
 import { listarPacientes } from "../../services/pacientesService";
 import { listarProcedimentos } from "../../services/procedimentosService";
-import { cadastrarConsulta, listarConsultasSemana } from "../../services/consultaService";
+import { cadastrarConsulta, listarConsultasSemana, buscarConsulta, deletarConsulta } from "../../services/consultaService";
 
 function getProcedimentoId(procedimento) {
     return procedimento.procedimento_id;
@@ -68,6 +68,21 @@ function createAgenda() {
     return linhas;
 }
 
+function getHorarioInicio(horario_inicio){
+    const tempo = horario_inicio.split(":");
+    return `${tempo[0]}:${tempo[1]}`;
+}
+
+function getHorarioFim(horario_fim){
+    const tempo = horario_fim.split(":");
+    if(tempo[1] == 30){
+        tempo[0] = tempo[0] + 1;
+        tempo[1] = 0;
+    }
+    else tempo[1] = 30;
+    return `${tempo[0]}:${tempo[1]}`;
+}
+
 export default function Agenda(){
     const [categoria, setCategoria] = useState(0);
     const [dentistas, setDentistas] = useState(null);
@@ -83,6 +98,8 @@ export default function Agenda(){
     const [fimRegistro, setFimRegistro] = useState("");
     const [descRegistro, setDescRegistro] = useState("");
     const [openRegistrar, setOpenRegistrar] = useState(false);
+    const [openConsulta, setOpenConsulta] = useState(false);
+    const [consultaAgenda, setConsultaAgenda] = useState(null);
     const [carregando, setCarregando] = useState(false);
     const [dia, setDia] = useState(getHoje());
     const [atualizaAgenda, setAtualizaAgenda] = useState(false);
@@ -119,6 +136,15 @@ export default function Agenda(){
     setAtualizaAgenda(!atualizaAgenda);
   }
 
+  const getLabelAgenda = (categoria, horario) => {
+    if(categoria == 0){
+        return `${horario.Consulta.Paciente.nome} | ${horario.horario_consulta}`;
+    }
+    else{
+        return `${horario.Consulta.Procedimento.procedimento_nome} | ${horario.horario_consulta}`;
+    }
+  }
+
   async function handleSubmit(event) {
     try{
         setCarregando(true);
@@ -146,12 +172,42 @@ export default function Agenda(){
     Atualiza();
   };
 
-  const getLabelAgenda = (categoria, horario) => {
-    if(categoria == 0){
-        return `${horario.Consulta.Paciente.nome} | ${horario.horario_consulta}`;
+  async function handleClickOpenAgenda(event) {
+    if(carregando) return;
+    try{
+        setCarregando(true);
+        const texto = event.target.innerText.split("|");
+        if(texto[0] == "Vazio"){
+            return;
+        }
+        const consulta_id = Number(texto[texto.length-1]);
+        const agendaConsulta = await buscarConsulta(consulta_id);
+        setConsultaAgenda(agendaConsulta);
+        console.log(agendaConsulta);
+        setOpenConsulta(true);
     }
-    else{
-        return `${horario.Consulta.Procedimento.procedimento_nome} | ${horario.horario_consulta}`;
+    catch(error){
+        console.error("Erro ao buscar consulta:", erro);
+        alert(erro.response?.data?.erro || "Erro ao buscar consulta.");
+    } finally {
+        setCarregando(false);
+    }
+  }
+
+  async function handleCloseAgenda() {
+    setOpenConsulta(false);
+  }
+
+  async function deletarConsulta(){
+    try{
+        setCarregando(true)
+        const resposta = await deletarConsulta(consultaAgenda.consulta_id);
+    }
+    catch(error){
+        console.error("Erro ao deletar consulta:", erro);
+        alert(erro.response?.data?.erro || "Erro ao deletar consulta.");
+    } finally {
+        setCarregando(false);
     }
   }
 
@@ -229,8 +285,6 @@ export default function Agenda(){
                     modifyRow(agenda, Number(dataList[2]) - segunda, linha, string);
                 }
                 setRows(agenda);
-                console.log(response);
-                console.log(rows);
             }
             catch (error) {
                 console.log(error);
@@ -416,19 +470,43 @@ export default function Agenda(){
                         key={row.horario}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
-                        <TableCell> {row.horario} </TableCell>
-                        <TableCell>{row.segunda}</TableCell>
-                        <TableCell>{row.terca}</TableCell>
-                        <TableCell>{row.quarta}</TableCell>
-                        <TableCell>{row.quinta}</TableCell>
-                        <TableCell>{row.sexta}</TableCell>
-                        <TableCell>{row.sabado}</TableCell>
-                        <TableCell>{row.domingo}</TableCell>
+                        <TableCell onClick={handleClickOpenAgenda}> {row.horario} </TableCell>
+                        <TableCell onClick={handleClickOpenAgenda}>{row.segunda}</TableCell>
+                        <TableCell onClick={handleClickOpenAgenda}>{row.terca}</TableCell>
+                        <TableCell onClick={handleClickOpenAgenda}>{row.quarta}</TableCell>
+                        <TableCell onClick={handleClickOpenAgenda}>{row.quinta}</TableCell>
+                        <TableCell onClick={handleClickOpenAgenda}>{row.sexta}</TableCell>
+                        <TableCell onClick={handleClickOpenAgenda}>{row.sabado}</TableCell>
+                        <TableCell onClick={handleClickOpenAgenda}>{row.domingo}</TableCell>
                         </TableRow>
                     ))}
                     </TableBody>
                 </Table>
             </TableContainer>
+            {consultaAgenda && <Dialog 
+            open={openConsulta} 
+            onClose={handleCloseAgenda}
+            fullWidth
+            maxWidth="md"
+            >
+                <DialogTitle>Consulta {consultaAgenda.consulta_id}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Abaixo estão os dados da consulta:
+                    </DialogContentText>
+                    <Box component="section" sx={{ p: 2, border: '1px dashed grey' }}>
+                        <p>Paciente: {consultaAgenda.Paciente.nome}</p>
+                        <p>Dentista: {consultaAgenda.Profissionals[0].nome}</p>
+                        <p>Procedimento: {consultaAgenda.Procedimento.procedimento_nome}</p>
+                        <p>Valor: {consultaAgenda.consulta_valor}</p>
+                        <p>Data: {consultaAgenda.Horarios[0].horario_data}</p>
+                        <p>Hora da consulta: {getHorarioInicio(consultaAgenda.Horarios[0].horario_hora)} - {getHorarioFim(consultaAgenda.Horarios[consultaAgenda.Horarios.length - 1].horario_hora)}</p>
+                        <p>Descrição: {consultaAgenda.consulta_desc}</p>
+                        <p>Atualização do Paciente: {consultaAgenda.consulta_att}</p>
+                        <p>Atualização do Odontograma: {consultaAgenda.alt_odonto}</p>
+                    </Box>
+                </DialogContent>
+            </Dialog>}
         </Stack>
     );
 }

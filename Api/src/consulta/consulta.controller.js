@@ -35,6 +35,7 @@ async function buscarConsulta(req, res) {
         if (!consulta) return res.status(404).json({ erro: "consulta não encontrada" });
         return res.status(200).json(consulta);
     } catch (erro) {
+        console.log(req);
         console.log("Erro ao buscar consulta:", erro);
         return res.status(500).json({ erro: erro.message });
     }

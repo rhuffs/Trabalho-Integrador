@@ -18,7 +18,7 @@ router.get(
     consultaController.contarConsultasHoje
 );
 
-router.get("/consulta/:id", requireJWTAuth ,consultaController.buscarConsulta);
+router.post("/consulta/:id", requirePermissaoMult(['SECRETARIO', 'DENTISTA']) ,consultaController.buscarConsulta);
 
 // POST /consulta
 router.post("/consulta", requirePermissaoMult(['SECRETARIO','DENTISTA','ADMIN']) , consultaController.criarConsulta);

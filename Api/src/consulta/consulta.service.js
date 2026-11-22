@@ -10,7 +10,7 @@ async function listarConsultas(dados) {
 }
 
 async function buscarConsulta(id) {
-    return consultaRepository.buscarConsulta(profissional_login, dados);
+    return consultaRepository.buscarConsulta(id);
 }
 
 async function criarConsulta(dados) {

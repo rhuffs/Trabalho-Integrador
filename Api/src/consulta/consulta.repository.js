@@ -74,6 +74,7 @@ async function buscarConsulta(consulta_id) {
             },
             { model: Financeiro},
             { model: Horario },
+            { model: Paciente },
         ],
     });
 }
