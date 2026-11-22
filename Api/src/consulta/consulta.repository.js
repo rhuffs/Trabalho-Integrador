@@ -1,5 +1,6 @@
 const { Op } = require("sequelize");
 const { Horario, Consulta, Procedimento, Paciente, ProfissionalConsulta, Profissional, Financeiro } = require("../database/models");
+const {criarHorario} = require("../horario/horario.service");
 
 async function listarConsultasPaciente(paciente_id) {
     return Consulta.findAll({ 
@@ -85,14 +86,23 @@ async function criarConsulta(dados) {
         dados.consulta_id = consulta.consulta_id;
         const participa = await ProfissionalConsulta.create(dados);
         resposta.push(participa);
+        dados.horario_consulta = consulta.consulta_id;
+        const horarios = await criarHorario(dados);
+        resposta.push(horarios);
         return {
             consulta: consulta,
             participacao: participa,
+            horarios: horarios,
         }
     }
     catch(erro){
         if( typeof resposta[0] !== 'undefined') await resposta[0].destroy();
         if( typeof resposta[1] !== 'undefined') await resposta[1].destroy();
+        if( typeof resposta[2] !== 'undefined') {
+            for(let i of resposta[2]){
+                await i.destroy();
+            }
+        }
         throw erro;
     }
 }

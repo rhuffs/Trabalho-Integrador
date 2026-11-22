@@ -38,6 +38,7 @@ const Horario = sequelize.define(
 Horario.associate = (models) => {
     Horario.belongsTo(models.Consulta, {
         foreignKey: "horario_consulta",
+        as: "Consulta",
     });
     Horario.belongsTo(models.Profissional, {
         foreignKey: "profissional_login",

@@ -13,6 +13,7 @@ async function listarHorariosSemana(profissional_login, dia_segunda, dia_domingo
         order: [["profissional_login", "ASC"],["horario_data", "ASC"],["horario_hora", "ASC"]],
         include: [{ 
                 model: Consulta,
+                as: "Consulta",
                 include: [
                     {model: Paciente},
                     {model: Procedimento},
@@ -31,6 +32,7 @@ async function buscarHorario(profissional_login, dados) {
         },
         include: [{ 
                 model: Consulta,
+                as: "Consulta",
                 include: [
                     {model: Paciente},
                     {model: Procedimento},

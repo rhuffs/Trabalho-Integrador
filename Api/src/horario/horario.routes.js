@@ -9,7 +9,7 @@ const router = express.Router();
 // GET /horario
 router.get("/horario", requirePermissaoMult(['SECRETARIO','DENTISTA']) , horarioController.buscarHorario);
 
-router.get("/horario/semana", requirePermissaoMult(['SECRETARIO','DENTISTA']) ,horarioController.listarHorariosSemana);
+router.post("/horario/semana", requirePermissaoMult(['SECRETARIO','DENTISTA']) ,horarioController.listarHorariosSemana);
 
 // POST /horario
 router.post("/horario", requirePermissaoMult(['SECRETARIO','DENTISTA']) , horarioController.criarHorario);

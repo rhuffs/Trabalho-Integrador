@@ -4,7 +4,7 @@ const { requirePermissaoMult } = require("../auth/auth.config");
 const router = express.Router();
 
 // GET /Procedimentos
-router.get("/Procedimentos",requirePermissaoMult(["DENTISTA", "ADMIN"]), ProcedimentosController.listar);
+router.get("/Procedimentos",requirePermissaoMult(["DENTISTA", "ADMIN", "SECRETARIO"]), ProcedimentosController.listar);
 
 // GET /Procedimentos/:nome
 router.get("/Procedimentos/nome",requirePermissaoMult(["DENTISTA", "ADMIN"]),ProcedimentosController.buscarPorNome);
