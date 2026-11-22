@@ -45,7 +45,7 @@ CREATE TABLE profissional (
     profissional_login       VARCHAR(255) NOT NULL PRIMARY KEY,
     nome        VARCHAR(100) NOT NULL,
     senha       VARCHAR(255) NOT NULL,  -- hash bcrypt da senha
-	telefone    VARCHAR(10) NOT NULL,
+	telefone    VARCHAR(11) NOT NULL,
 	tipo_profissional enum_profissional_tipo NOT NULL
 );
 
