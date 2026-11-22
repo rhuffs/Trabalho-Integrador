@@ -28,6 +28,10 @@ async function buscarPorCpf(cpf) {
     return pacientesRepository.buscarPorCpf(cpf);
 }
 
+async function contarPacientesAtivos() {
+    return pacientesRepository.contarPacientesAtivos();
+}
+
 module.exports = {
     listar,
     buscarPorId,
@@ -36,4 +40,5 @@ module.exports = {
     deletar,
     buscarPorNome,
     buscarPorCpf,
+    contarPacientesAtivos
 };

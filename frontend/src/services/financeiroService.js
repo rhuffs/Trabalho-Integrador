@@ -21,11 +21,9 @@ export async function getValorDebitos() {
 }
 
 export async function getTotalRecebido() {
-    const devedores = await listarDevedores();
+    const resposta = await api.get("/financeiro/total-recebido-mes");
 
-    return devedores.reduce((total, conta) => {
-        return total + Number(conta.financeiro_pago || 0);
-    }, 0);
+    return Number(resposta.data.total);
 }
 
 export async function RegistarPagamentos({paciente_id,valor}) {
@@ -36,6 +34,13 @@ export async function RegistarPagamentos({paciente_id,valor}) {
             valor
         }
     );
+
+    return resposta.data;
+}
+
+
+export async function getReceitasPorMes() {
+    const resposta = await api.get("/financeiro/receitas-por-mes");
 
     return resposta.data;
 }

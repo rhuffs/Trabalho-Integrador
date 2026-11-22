@@ -51,14 +51,11 @@ export default function CadastroPaciente({ abrir, fechar, aoCadastrar }) {
     async function handleCadastrar() {
         try {
             setCarregando(true);
-
             await cadastrarPaciente(dados, odontograma);
-
             // Atualiza a lista de pacientes após o cadastro
             if (aoCadastrar) {
                 await aoCadastrar();
             }
-
             alert("Paciente cadastrado com sucesso!");
 
             setDados({

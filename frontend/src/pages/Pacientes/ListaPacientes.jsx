@@ -35,22 +35,46 @@ export default function ListaPacientes({ pesquisa,atualizacao }) {
         }
     }
 
-    function removerPaciente(id) {
+    function removerPaciente(id) { // apaga da lista
         setPacientes((anterior) =>
             anterior.filter((paciente) => paciente.id !== id)
         );
     }
 
-    function atualizarPacienteNaLista(pacienteAtualizado) {
+    const atualizarPacienteNaLista = (pacienteAtualizado) => {
         setPacientes((anterior) =>
-            anterior.map((paciente) =>
-                paciente.id === pacienteAtualizado.id ? { ...paciente, ...pacienteAtualizado } : paciente
-            )
+            anterior.map((paciente) => {
+                if (paciente.id === pacienteAtualizado.id) {
+                    return {
+                        id: pacienteAtualizado.id,
+                        nome: pacienteAtualizado.nome,
+                        data_nascimento: pacienteAtualizado.data_nascimento,
+                        endereco: pacienteAtualizado.endereco,
+                        profissao: pacienteAtualizado.profissao,
+                        quem_indicou: pacienteAtualizado.quem_indicou,
+                        cidade: pacienteAtualizado.cidade,
+                        uf: pacienteAtualizado.uf,
+                        cep: pacienteAtualizado.cep,
+                        telefone: pacienteAtualizado.telefone,
+                        local_nascimento: pacienteAtualizado.local_nascimento,
+                        sexo: pacienteAtualizado.sexo,
+                        estado_civil: pacienteAtualizado.estado_civil,
+                        email: pacienteAtualizado.email,
+                        mae_pai: pacienteAtualizado.mae_pai,
+                        cpf: pacienteAtualizado.cpf,
+                        rg: pacienteAtualizado.rg,
+                        autorizacao: pacienteAtualizado.autorizacao,
+                        odontograma: pacienteAtualizado.odontograma,
+                        ativo: pacienteAtualizado.ativo
+                    };
+                }
+
+                return paciente;
+            })
         );
-        setPacienteSelecionado((anterior) =>
-            anterior ? { ...anterior, ...pacienteAtualizado } : anterior
-        );
-    }
+
+        setPacienteSelecionado(pacienteAtualizado);
+    };
 
     useEffect(() => {
         carregarPacientes();
@@ -97,7 +121,6 @@ export default function ListaPacientes({ pesquisa,atualizacao }) {
                                 <TableCell><strong>Cidade</strong></TableCell>
                             </TableRow>
                         </TableHead>
-
                         <TableBody>
                             {pacientesFiltrados.map((paciente) => (
                                 <TableRow
@@ -106,27 +129,21 @@ export default function ListaPacientes({ pesquisa,atualizacao }) {
                                     onClick={() => setPacienteSelecionado(paciente)}
                                     sx={{ cursor: "pointer" }}
                                 >
-
                                     <TableCell>
                                         {paciente.nome}
                                     </TableCell>
-
                                     <TableCell>
                                         {paciente.cpf || "-"}
                                     </TableCell>
-
                                     <TableCell>
                                         {paciente.telefone}
                                     </TableCell>
-
                                     <TableCell>
                                         {paciente.email}
                                     </TableCell>
-
                                     <TableCell>
                                         {paciente.cidade}/{paciente.uf}
                                     </TableCell>
-
                                 </TableRow>
                             ))}
                         </TableBody>

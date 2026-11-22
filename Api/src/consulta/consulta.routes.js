@@ -11,6 +11,12 @@ router.get("/consulta", requirePermissaoMult(['SECRETARIO','DENTISTA','ADMIN']) 
 
 router.get("/consulta/paciente",requirePermissaoMult(["SECRETARIO", "DENTISTA",'ADMIN']),consultaController.listarConsultasPaciente); //Rhuan: criei uma nova para funcioonar na pagina de paciente
 
+// GET /consulta/contar-hoje  Rhuan: serve para conatbilizar consultas de hj
+router.get(
+    "/consulta/contar-hoje",
+    requirePermissaoMult(["SECRETARIO", "DENTISTA", "ADMIN"]),
+    consultaController.contarConsultasHoje
+);
 
 router.get("/consulta/:id", requireJWTAuth ,consultaController.buscarConsulta);
 

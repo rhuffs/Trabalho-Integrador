@@ -12,6 +12,13 @@ router.get(
     FinanceiroController.listar
 );
 
+// GET /financeiro/receitas-por-mes
+router.get(
+    "/receitas-por-mes",
+    requirePermissaoMult(["SECRETARIO", "DENTISTA", "ADMIN"]),
+    FinanceiroController.receitasPorMes
+);
+
 // GET /financeiro/paciente/:paciente_id
 router.get(
     "/paciente/:paciente_id",
@@ -24,6 +31,13 @@ router.get(
     "/saldo/:paciente_id",
     requirePermissaoMult(["SECRETARIO", "DENTISTA", "ADMIN"]),
     FinanceiroController.calcularSaldo
+);
+
+// GET /financeiro/total-recebido-mes
+router.get(
+    "/total-recebido-mes",
+    requirePermissaoMult(["SECRETARIO", "DENTISTA", "ADMIN"]),
+    FinanceiroController.totalRecebidoNoMes
 );
 
 // GET /financeiro/:id

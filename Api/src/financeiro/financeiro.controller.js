@@ -90,11 +90,35 @@ async function calcularSaldo(req, res) {
     }
 }
 
+async function totalRecebidoNoMes(req, res) {
+    try {
+        const total = await financeiroService.totalRecebidoNoMes();
+
+        return res.status(200).json({ total });
+    } catch (erro) {
+        console.log("Erro ao calcular total recebido:", erro);
+        return res.status(500).json({ erro: erro.message });
+    }
+}
+
+async function receitasPorMes(req, res) {
+    try {
+        const receitas = await financeiroService.receitasPorMes();
+
+        return res.status(200).json(receitas);
+    } catch (erro) {
+        console.log("Erro ao buscar receitas por mês:", erro);
+        return res.status(500).json({ erro: erro.message });
+    }
+}
+
 module.exports = {
     listar,
     buscarPorId,
     buscarPorPaciente,
     registrarDebito,
     registrarCredito,
-    calcularSaldo
+    calcularSaldo,
+    totalRecebidoNoMes,
+    receitasPorMes
 };

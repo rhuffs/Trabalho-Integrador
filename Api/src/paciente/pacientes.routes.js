@@ -8,6 +8,13 @@ const upload = require("../middlewares/upload");
 // GET /pacientes
 router.get("/pacientes",requirePermissaoMult(["SECRETARIO", "DENTISTA", "ADMIN"]), pacientesController.listar);
 
+// GET /pacientes/contar-ativos
+router.get(
+    "/pacientes/contar-ativos",
+    requirePermissaoMult(["SECRETARIO", "DENTISTA", "ADMIN"]),
+    pacientesController.contarPacientesAtivos
+);
+
 // GET /pacientes/:id
 router.get("/pacientes/:id",requirePermissaoMult(["SECRETARIO", "DENTISTA", "ADMIN"]),pacientesController.buscarPorId);
 
