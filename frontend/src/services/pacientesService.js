@@ -36,3 +36,9 @@ export async function deletarPaciente(id) {
     const resposta = await api.delete(`/pacientes/${id}`);
     return resposta.data;
 }
+
+export async function contarPacientesAtivos() {
+    const resposta = await api.get("/pacientes/contar-ativos");
+
+    return resposta.data.total;
+}

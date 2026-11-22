@@ -85,11 +85,21 @@ async function calcularSaldo(paciente_id) {
     return await financeiroRepository.calcularSaldo(paciente_id);
 }
 
+async function totalRecebidoNoMes() {
+    return await financeiroRepository.totalRecebidoNoMes();
+}
+
+async function receitasPorMes() {
+    return await financeiroRepository.receitasPorMes();
+}
+
 module.exports = {
     listar,
     buscarPorId,
     buscarPorPaciente,
     registrarDebito,
     registrarCredito,
-    calcularSaldo
+    calcularSaldo,
+    totalRecebidoNoMes,
+    receitasPorMes
 };

@@ -10,9 +10,18 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Header from "../../components/Header";
 import Receber from "./Receber";
+import Dashbord from "./Dashbord";
 import FinPesquisa from "./FinPesquisa";
 import ListaContas from "./ListaContas";
-import {listarDevedores,RegistarPagamentos} from "../../services/financeiroService";
+import {
+    listarDevedores,
+    RegistarPagamentos,
+    getTotalRecebido,
+    getReceitasPorMes
+} from "../../services/financeiroService";
+import { contarPacientesAtivos } from "../../services/pacientesService";
+import { contarConsultasHoje } from "../../services/consultaService";
+import GraficosDashboard from "./GraficosDashboard";
 import "./Financeiro.css";
 
 export default function Financeiro() {
@@ -25,20 +34,40 @@ export default function Financeiro() {
     const [valorPagamento, setValorPagamento] = useState("");
     const [salvando, setSalvando] = useState(false);
     const [erroPagamento, setErroPagamento] = useState("");
+    const [totalRecebido, setTotalRecebido] = useState(0);
+    const [totalPacientes, setTotalPacientes] = useState(0);
+    const [consultasHoje, setConsultasHoje] = useState(0);
+    const [receitasPorMes, setReceitasPorMes] = useState([]);
 
-    const carregarContas = useCallback(async () => {
+    const carregarDashboard = useCallback(async () => {
+        try {
+            const [pacientes, consultas, receitas] = await Promise.all([
+                contarPacientesAtivos(),
+                contarConsultasHoje(),
+                getReceitasPorMes()
+            ]);
+
+            setTotalPacientes(pacientes);
+            setConsultasHoje(consultas);
+            setReceitasPorMes(receitas);
+
+        } catch (error) {
+            console.error("Erro ao carregar Dashboard:", error);
+        }
+    }, []);
+
+    const carregarContas = useCallback(async () => { //Rhuan;  useCallback serve ppara memorizar uma fução
         try {
             setCarregando(true);
             setErro("");
-
             const dados = await listarDevedores();
+            const recebido = await getTotalRecebido();
 
+            setTotalRecebido(recebido);
             if (!Array.isArray(dados)) {
                 throw new Error("A API não retornou uma lista.");
             }
-
             setContas([...dados]);
-
         } catch (error) {
             console.error("Erro ao carregar contas:", error);
             setErro("Não foi possível carregar as contas.");
@@ -50,21 +79,21 @@ export default function Financeiro() {
 
     useEffect(() => {
         carregarContas();
-    }, [carregarContas]);
+        carregarDashboard();
+    }, [carregarContas, carregarDashboard]);
 
-    // Calcular totais
     const totais = useMemo(() => {
         const saldosPorPaciente = {};
-        let recebido = 0;
-
         contas.forEach((conta) => {
             const id = conta.paciente_id;
-            saldosPorPaciente[id] =(saldosPorPaciente[id] || 0) + Number(conta.financeiro_saldo || 0);
-            recebido += Number(conta.financeiro_pago || 0);
+            saldosPorPaciente[id] = (saldosPorPaciente[id] || 0) + Number(conta.financeiro_saldo || 0);
         });
-        const aReceber = Object.values(saldosPorPaciente).reduce((total, saldo) => total + Math.max(saldo, 0),0);
 
-        return {aReceber,recebido};
+        const aReceber = Object.values(saldosPorPaciente).reduce(
+            (total, saldo) => total + Math.max(saldo, 0),0
+        );
+
+        return { aReceber };
 
     }, [contas]);
 
@@ -140,11 +169,22 @@ export default function Financeiro() {
                     Contas a Receber
                 </Typography>
 
-                <Receber
+                {/* <Receber  // antigo receber
                     totalReceber={totais.aReceber}
-                    totalRecebido={totais.recebido}
+                    totalRecebido={totalRecebido}
+                /> */}
+                <Dashbord
+                    totalReceber={totais.aReceber}
+                    totalRecebido={totalRecebido}
+                    totalPacientes={totalPacientes}
+                    consultasHoje={consultasHoje}
                 />
 
+                <GraficosDashboard
+                    totalReceber={totais.aReceber}
+                    totalRecebido={totalRecebido}
+                    receitasPorMes={receitasPorMes}
+                />
                 <FinPesquisa
                     pesquisa={pesquisa}
                     setPesquisa={setPesquisa}
@@ -160,7 +200,6 @@ export default function Financeiro() {
 
             </Stack>
 
-            {/* Janela de pagamento */}
             <Dialog
                 open={Boolean(pacienteSelecionado)}
                 onClose={fecharPagamento}
@@ -176,19 +215,16 @@ export default function Financeiro() {
 
                     {pacienteSelecionado && (
                         <Stack spacing={2} sx={{ mt: 1 }}>
-
                             <Typography>
                                 Paciente: <strong>
                                     {pacienteSelecionado.nomePaciente}
                                 </strong>
                             </Typography>
-
                             <Typography>
                                 Saldo devedor: <strong>
                                     R$ {pacienteSelecionado.saldo.toFixed(2)}
                                 </strong>
                             </Typography>
-
                             <TextField
                                 label="Valor do pagamento"
                                 type="number"
@@ -201,13 +237,11 @@ export default function Financeiro() {
                                     step: "0.01"
                                 }}
                             />
-
                             {erroPagamento && (
                                 <Typography color="error">
                                     {erroPagamento}
                                 </Typography>
                             )}
-
                         </Stack>
                     )}
 

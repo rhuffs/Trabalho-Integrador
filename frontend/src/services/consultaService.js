@@ -25,3 +25,9 @@ export async function deletarConsulta(id) {
     const resposta = await api.delete(`/consulta/${id}`);
     return resposta.data;
 }
+
+export async function contarConsultasHoje() {
+    const resposta = await api.get("/consulta/contar-hoje");
+
+    return resposta.data.total;
+}

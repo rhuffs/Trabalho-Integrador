@@ -137,6 +137,27 @@ async function verificarParticipacaoDentista(consulta_id, profissional_login){
     return answ;
 }
 
+async function contarConsultasHoje() {
+    const hoje = new Date();
+    const dataHoje =
+        hoje.getFullYear() + "-" +
+        String(hoje.getMonth() + 1).padStart(2, "0") + "-" +
+        String(hoje.getDate()).padStart(2, "0");
+    return Consulta.count({
+        include: [
+            {
+                model: Horario,
+                where: {
+                    horario_data: dataHoje
+                },
+                required: true
+            }
+        ],
+        distinct: true,
+        col: "consulta_id"
+    });
+}
+
 module.exports = {
     listarConsultasPaciente,
     listarConsultasDentista,
@@ -148,4 +169,5 @@ module.exports = {
     deletarConsulta,
     deletarProfissionalConsulta,
     verificarParticipacaoDentista,
+    contarConsultasHoje
 };

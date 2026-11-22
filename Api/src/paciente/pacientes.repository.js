@@ -20,34 +20,18 @@ async function atualizar(id, dados) {
     return paciente.update(dados);
 }
 
-// async function deletar(id) {
-//     const paciente = await Paciente.findByPk(id);
-//     if (!paciente) return null;
-//     await paciente.update({ ativo: false });
-//     return paciente;
-// }
-console.log("Atributos do Paciente:", Object.keys(Paciente.rawAttributes));
-console.log("Atributo ativo:", Paciente.rawAttributes.ativo);
-
 async function deletar(id) {
     console.log("ID recebido para exclusão:", id);
-
     const paciente = await Paciente.findByPk(id);
-
-    console.log("Paciente encontrado:", paciente?.toJSON());
 
     if (!paciente) {
         console.log("Paciente não encontrado!");
         return null;
     }
-
     await paciente.update(
         { ativo: false },
         { logging: console.log }
     );
-
-    console.log("Paciente após atualização:", paciente.toJSON());
-
     return paciente;
 }
 
@@ -68,6 +52,11 @@ async function buscarPorCpf(cpf){
     });
 }
 
+async function contarPacientesAtivos() {
+    return Paciente.count({
+        where: { ativo: true }
+    });
+}
 
 
 module.exports = {
@@ -78,4 +67,5 @@ module.exports = {
     deletar,
     buscarPorNome,
     buscarPorCpf,
+    contarPacientesAtivos
 };

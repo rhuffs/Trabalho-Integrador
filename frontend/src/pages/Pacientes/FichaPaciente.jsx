@@ -78,26 +78,45 @@ export default function FichaPaciente({ paciente, fechar, aoExcluir, aoAtualizar
 
     }, [paciente?.id]);
 
-    function alterarCampo(campo, valor) {
-        setDados((anterior) => ({
-            ...anterior,
-            [campo]: valor
-        }));
-    }
+    const alterarCampo = (campo, valor) => {
+        setDados((anterior) => {
+            const novoDados = {
+                id: anterior.id,
+                nome: anterior.nome,
+                data_nascimento: anterior.data_nascimento,
+                endereco: anterior.endereco,
+                profissao: anterior.profissao,
+                quem_indicou: anterior.quem_indicou,
+                cidade: anterior.cidade,
+                uf: anterior.uf,
+                cep: anterior.cep,
+                telefone: anterior.telefone,
+                local_nascimento: anterior.local_nascimento,
+                sexo: anterior.sexo,
+                estado_civil: anterior.estado_civil,
+                email: anterior.email,
+                mae_pai: anterior.mae_pai,
+                cpf: anterior.cpf,
+                rg: anterior.rg,
+                autorizacao: anterior.autorizacao,
+                odontograma: anterior.odontograma
+            };
+
+            novoDados[campo] = valor;
+
+            return novoDados;
+        });
+    };
 
     async function salvarAlteracoes() {
         try {
             setSalvando(true);
             setErroAcao("");
-
             const pacienteAtualizado = await atualizarPaciente(paciente.id, dados);
-
             if (aoAtualizar) {
                 aoAtualizar(pacienteAtualizado);
             }
-
             setEditando(false);
-
         } catch (erro) {
             console.error("Erro ao atualizar paciente:", erro);
             setErroAcao("Não foi possível atualizar o paciente.");

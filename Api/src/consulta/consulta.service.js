@@ -46,6 +46,10 @@ async function removerDentistaConsulta(profissional_login, consulta_id) {
     return consultaRepository.deletarProfissionalConsulta(profissional_login, consulta_id);
 }
 
+async function contarConsultasHoje() {
+    return consultaRepository.contarConsultasHoje();
+}
+
 module.exports = {
     listarConsultas,
     buscarConsulta,
@@ -54,4 +58,5 @@ module.exports = {
     deletarConsulta,
     adicionarDentistaConsulta,
     removerDentistaConsulta,
+    contarConsultasHoje
 };

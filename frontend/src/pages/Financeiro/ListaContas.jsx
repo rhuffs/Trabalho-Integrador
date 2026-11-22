@@ -38,6 +38,7 @@ export default function ListaContas({
         const agrupados = {};
 
         contas.forEach((conta) => {
+            console.log("Dados da conta:", conta);
             const id = conta.paciente_id;
             const dataMovimentacao = conta.data_movimentacao
                 ? new Date(conta.data_movimentacao)
@@ -46,11 +47,7 @@ export default function ListaContas({
             if (!agrupados[id]) {
                 agrupados[id] = {
                     paciente_id: id,
-                    nomePaciente:
-                        conta.Paciente?.nome ||
-                        conta.paciente?.nome ||
-                        conta.paciente_nome ||
-                        `Paciente #${id}`,
+                    nomePaciente: conta.Paciente?.nome || `Paciente #${id}`,
                     pago: 0,
                     saldo: 0,
                     ultimaMovimentacao: null
@@ -65,12 +62,7 @@ export default function ListaContas({
             if (dataMovimentacao && !Number.isNaN(dataMovimentacao.getTime()) &&(!paciente.ultimaMovimentacao || dataMovimentacao > paciente.ultimaMovimentacao)
             ) {
                 paciente.ultimaMovimentacao = dataMovimentacao;
-
-                paciente.nomePaciente =
-                    conta.Paciente?.nome ||
-                    conta.paciente?.nome ||
-                    conta.paciente_nome ||
-                    paciente.nomePaciente;
+                paciente.nomePaciente = conta.Paciente?.nome || paciente.nomePaciente;;
             }
         });
         return Object.values(agrupados)
@@ -181,7 +173,6 @@ export default function ListaContas({
                                 </TableCell>
                             </TableRow>
                         ))}
-
                         {contasFiltradas.length === 0 && (
                             <TableRow>
                                 <TableCell colSpan={5} align="center">

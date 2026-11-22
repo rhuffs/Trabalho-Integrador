@@ -15,10 +15,6 @@ export default function FinPesquisa({ pesquisa, setPesquisa }) {
     const [abrirPagamento, setAbrirPagamento] = useState(false);
 
     return (
-
-        
-
-
         <Stack
             direction="column"
             spacing={3}
@@ -26,18 +22,13 @@ export default function FinPesquisa({ pesquisa, setPesquisa }) {
                 width: "100%",
                 mt: 4
             }}
-
         >
-
             <TextField
                 fullWidth
                 label="Pesquisar paciente"
                 value={pesquisa}
                 onChange={(e) => setPesquisa(e.target.value)}
             />
-
-            
-
             <Dialog
                 open={abrirPagamento}
                 onClose={() => setAbrirPagamento(false)}

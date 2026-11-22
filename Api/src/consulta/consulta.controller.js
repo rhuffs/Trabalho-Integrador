@@ -95,6 +95,18 @@ async function removerDentistaConsulta(req, res) {
     }
 }
 
+async function contarConsultasHoje(req, res) {
+    try {
+        const total = await consultaService.contarConsultasHoje();
+
+        return res.status(200).json({ total });
+
+    } catch (erro) {
+        console.log("Erro ao contar consultas de hoje:", erro);
+        return res.status(500).json({ erro: erro.message });
+    }
+}
+
 module.exports = {
     listarConsultas,
     buscarConsulta,
@@ -103,5 +115,6 @@ module.exports = {
     deletarConsulta,
     adicionarDentistaConsulta,
     removerDentistaConsulta,
-    listarConsultasPaciente
+    listarConsultasPaciente,
+    contarConsultasHoje
 };

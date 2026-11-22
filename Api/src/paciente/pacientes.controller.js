@@ -84,6 +84,18 @@ async function buscarPorCpf(req,res) {
     }
 }
 
+async function contarPacientesAtivos(req, res) {
+    try {
+        const total = await pacientesService.contarPacientesAtivos();
+
+        return res.status(200).json({ total });
+
+    } catch (erro) {
+        console.log("Erro ao contar pacientes ativos:", erro);
+        return res.status(500).json({ erro: erro.message });
+    }
+}
+
 
 
 
@@ -94,5 +106,6 @@ module.exports = {
     atualizar,
     deletar,
     buscarPorNome,
-    buscarPorCpf
+    buscarPorCpf,
+    contarPacientesAtivos
 };
