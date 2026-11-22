@@ -1,18 +1,15 @@
 
 import { useState } from "react";
-
 import { Stack, Typography } from "@mui/material";
-
 import Header from "../../components/Header";
 import PesquisaPacientes from "./PesquisaPacientes.jsx";
 import ListaPacientes from "./ListaPacientes.jsx";
 import "./Pacientes.css";
 
 export default function Pacientes() {
-
     const [pesquisa, setPesquisa] = useState("");
     const [atualizacao, setAtualizacao] = useState(0);
-
+    
     function atualizarLista() {
         setAtualizacao((anterior) => anterior + 1);
     }

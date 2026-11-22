@@ -45,7 +45,7 @@ CREATE TABLE profissional (
     profissional_login       VARCHAR(255) NOT NULL PRIMARY KEY,
     nome        VARCHAR(100) NOT NULL,
     senha       VARCHAR(255) NOT NULL,  -- hash bcrypt da senha
-	telefone    VARCHAR(10) NOT NULL,
+	telefone    VARCHAR(11) NOT NULL,
 	tipo_profissional enum_profissional_tipo NOT NULL
 );
 
@@ -265,3 +265,25 @@ ADD COLUMN odontograma VARCHAR(500);
 
 ALTER TABLE pacientes
 ADD COLUMN ativo BOOLEAN NOT NULL DEFAULT TRUE;
+
+INSERT INTO profissional (
+    profissional_login,
+    nome,
+    senha,
+    telefone,
+    tipo_profissional
+) VALUES (
+    'ADMIN',
+    'admin',
+    '$2b$10$norKjBzgijf0JN.I6nt1Puyv8ZQzex6551pxLyPFLrQ99L3jLOZNa',  /* a senha é 123 ;)*/
+    '4999999999',
+    'SECRETARIO'
+);
+
+INSERT INTO profissional_permissao (
+    profissional_login,
+    id_permissao
+)
+SELECT 'ADMIN', id
+FROM permissao
+WHERE descricao = 'ADMIN';

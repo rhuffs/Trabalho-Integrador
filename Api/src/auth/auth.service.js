@@ -33,6 +33,13 @@ async function criarNovoUsuario(dados) {
     // Dica 1: defina saltRounds = 10
     // Dica 2: gere o salt com bcrypt.genSaltSync(saltRounds)
     // Dica 3: gere o hash com bcrypt.hashSync(passwd, salt)
+    if (!username || !passwd || !nome || !telefone || !tipo_profissional) {
+        throw new Error("Todos os campos são obrigatórios.");
+    }
+
+    if (!["DENTISTA", "SECRETARIO"].includes(tipo_profissional)) {
+        throw new Error("Tipo de profissional inválido.");
+    }
     const saltRounds = 10;
     const salt = bcrypt.genSaltSync(saltRounds);
     const senhaHash =  bcrypt.hashSync(passwd, salt);

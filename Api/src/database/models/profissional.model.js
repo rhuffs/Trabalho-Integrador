@@ -22,7 +22,7 @@ const Profissional = sequelize.define(
 				type: DataTypes.STRING,
 			},
 			tipo_profissional: {
-				type: DataTypes.ENUM('Dentista','Secretario'),
+				type: DataTypes.ENUM('DENTISTA','SECRETARIO'),
 				allowNull: false,
 			}
 		},

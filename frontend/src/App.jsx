@@ -6,6 +6,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Agenda from "./pages/Agenda/Agenda";
 import Pacientes from "./pages/Pacientes/Pacientes";
 import Financeiro from "./pages/Financeiro/Financeiro";
+import Profissionais from "./pages/Profissionais/Profissionais";
 
 
 function App() {
@@ -38,6 +39,14 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
+                <Route
+                    path="/Profissionais"
+                    element={
+                        <ProtectedRoute permissao= "ADMIN">
+                            <Profissionais />
+                        </ProtectedRoute>
+                    }
+                />  
             </Routes>
         </BrowserRouter>
   );

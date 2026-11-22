@@ -1,10 +1,6 @@
 # Dependências
 node_modules/
 
-# Variáveis de ambiente e dados sensíveis
-.env
-.env.*
-!.env.example
 
 # Logs
 logs/
