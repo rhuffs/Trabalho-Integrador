@@ -47,7 +47,9 @@ As dependências estão declaradas nos arquivos `package.json` de cada diretóri
 O projeto utiliza Yarn para gerenciamento das dependências.
 
 cd Api
+
 yarn install
 
 cd frontend
+
 yarn install
