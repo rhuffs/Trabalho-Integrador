@@ -173,8 +173,8 @@ export default function Agenda(){
         Atualiza();
     }
     catch(error){
-        console.error("Erro ao cadastrar consulta:", erro);
-        alert(error.response?.data?.error || "Erro ao cadastrar consulta.");
+        console.error("Erro ao cadastrar consulta:", error);
+        alert(error.message || "Erro ao cadastrar consulta.");
     } finally {
         setCarregando(false);
         handleCloseRegistrar();
@@ -278,7 +278,7 @@ export default function Agenda(){
     }
     catch(error){
         console.error("Erro ao setar data nova:", error);
-        alert(error.response?.data?.error || "Erro ao setar data nova.");
+        alert(error.message || "Erro ao setar data nova.");
     }
   }
 
@@ -302,6 +302,7 @@ export default function Agenda(){
             }
             catch (error) {
                 console.log(error);
+                alert(error.message || "Erro ao buscar os dentistas.");
                 setDentistas(null);
                 // COLOCAR UM ALERT AQUI
             }
@@ -317,6 +318,7 @@ export default function Agenda(){
             }
             catch (error) {
                 console.log(error);
+                alert(error.message || "Erro ao buscar os pacientes");
                 setPacientes(null);
                 // COLOCAR UM ALERT AQUI
             }
@@ -332,6 +334,7 @@ export default function Agenda(){
             }
             catch (error) {
                 console.log(error);
+                alert(error.message || "Erro ao buscar os procedimentos.");
                 setProcedimentos(null);
                 // COLOCAR UM ALERT AQUI
             }
@@ -359,6 +362,7 @@ export default function Agenda(){
             }
             catch (error) {
                 console.log(error);
+                alert(error.message || "Erro ao buscar as consultas da semana.");
             }
         }
 
