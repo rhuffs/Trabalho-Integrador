@@ -5,7 +5,7 @@ async function listarHorariosSemana(profissional_login, dados) {
     const segunda = dados.dia.replaceAll("/","-");
     const dia_segunda = new Date(segunda);
     const dia = dia_segunda.getDay();
-    dia_segunda.setDate(dia_segunda.getDate() - dia);
+    dia_segunda.setDate(dia_segunda.getDate() - dia + 1);
     const dia_domingo = new Date(dia_segunda);
     dia_domingo.setDate(dia_domingo.getDate() + 6);
     return horarioRepository.listarHorariosSemana(profissional_login, dia_segunda, dia_domingo);
@@ -19,7 +19,7 @@ async function criarHorario(dados) {
     if(Object.hasOwn(dados, "horario_compromisso") && Object.hasOwn(dados, "horario_consulta")) throw new Error("Compromisso e consulta no mesmo horário", {cause: "Um horário deve ter apenas um compromisso ou uma consulta"});
     const profissional = await buscarProfissional(dados.profissional_login);
     if(profissional.tipo_profissional != "DENTISTA") throw new Error("Profissional Inválido", {cause: "Apenas dentistas podem ter horarios"});
-    if(await checarValidadeData(dados.horario_data, dados.horario_hora));
+    await checarValidadeData(dados.horario_data, dados.horario_hora);
     const tempo_inicio = await checarValidadeTempo(dados.horario_hora);
     if(Object.hasOwn(dados, "horario_fim")){
         const tempo_fim = await checarValidadeTempo(dados.horario_fim);
@@ -68,7 +68,20 @@ async function checarValidadeTempo(string) {
 async function checarValidadeData(horario_data, horario_hora){
     const hoje = new Date();
     const data = horario_data.split("/");
-    if(hoje.getFullYear() < data[0]) throw new Error("Data inválida", {cause: "Ano não pode ser menor que o atual"});
+    console.log("data", data);
+    console.log("ano:", Number(data[0]), " mes:", Number(data[1]), " dia:", Number(data[2]));
+    console.log("data:", hoje.getFullYear(), "/", hoje.getMonth(), "/", hoje.getDate());
+    if(hoje.getFullYear() > Number(data[0])) throw new Error("Data inválida");
+    if(hoje.getFullYear() < Number(data[0])) return;
+    if((hoje.getMonth() + 1) > Number(data[1])) throw new Error("Data inválida");
+    if((hoje.getMonth() + 1) < Number(data[1])) return;
+    if(hoje.getDate() > Number(data[2])) throw new Error("Data inválida");
+    if(hoje.getDate() < Number(data[2])) return;
+    const horas = horario_hora.split(":");
+    console.log("horas:", horas);
+    if(hoje.getHours() > Number(horas[0])) throw new Error("Horario inválido");
+    if(hoje.getHours() < Number(horas[0])) return;
+    if(hoje.getMinutes() > Number(horas[1])) throw new Error("Horario inválido");
 }
 
 module.exports = {

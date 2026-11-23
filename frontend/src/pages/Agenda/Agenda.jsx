@@ -359,6 +359,7 @@ export default function Agenda(){
                     modifyRow(agenda, Number(dataList[2]) - segunda, linha, string);
                 }
                 setRows(agenda);
+                console.log(agenda);
             }
             catch (error) {
                 console.log(error);
