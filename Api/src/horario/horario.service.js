@@ -5,8 +5,7 @@ async function listarHorariosSemana(profissional_login, dados) {
     const segunda = dados.dia.replaceAll("/","-");
     const dia_segunda = new Date(segunda);
     const dia = dia_segunda.getDay();
-    if(dia == 0) dia_segunda.setDate(dia_segunda.getDate() - 6)
-    else dia_segunda.setDate(dia_segunda.getDate() - dia + 1);
+    dia_segunda.setDate(dia_segunda.getDate() - dia);
     const dia_domingo = new Date(dia_segunda);
     dia_domingo.setDate(dia_domingo.getDate() + 6);
     return horarioRepository.listarHorariosSemana(profissional_login, dia_segunda, dia_domingo);
@@ -20,7 +19,7 @@ async function criarHorario(dados) {
     if(Object.hasOwn(dados, "horario_compromisso") && Object.hasOwn(dados, "horario_consulta")) throw new Error("Compromisso e consulta no mesmo horário", {cause: "Um horário deve ter apenas um compromisso ou uma consulta"});
     const profissional = await buscarProfissional(dados.profissional_login);
     if(profissional.tipo_profissional != "DENTISTA") throw new Error("Profissional Inválido", {cause: "Apenas dentistas podem ter horarios"});
-    //if(await checarValidadeData(dados.horario_data, dados.horario_hora));
+    if(await checarValidadeData(dados.horario_data, dados.horario_hora));
     const tempo_inicio = await checarValidadeTempo(dados.horario_hora);
     if(Object.hasOwn(dados, "horario_fim")){
         const tempo_fim = await checarValidadeTempo(dados.horario_fim);

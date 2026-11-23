@@ -25,7 +25,7 @@ import { VerificaPermissao } from "../Login/Login";
 import { listarDentistas } from "../../services/authService";
 import { listarPacientes } from "../../services/pacientesService";
 import { listarProcedimentos } from "../../services/procedimentosService";
-import { cadastrarConsulta, listarConsultasSemana, buscarConsulta, deletarConsulta } from "../../services/consultaService";
+import { cadastrarConsulta, listarConsultasSemana, buscarConsulta, deletarConsulta, atualizarConsulta, gerarDebito } from "../../services/consultaService";
 
 function getProcedimentoId(procedimento) {
     return procedimento.procedimento_id;
@@ -76,8 +76,8 @@ function getHorarioInicio(horario_inicio){
 function getHorarioFim(horario_fim){
     const tempo = horario_fim.split(":");
     if(tempo[1] == 30){
-        tempo[0] = tempo[0] + 1;
-        tempo[1] = 0;
+        tempo[0] = Number(tempo[0]) + 1;
+        tempo[1] = "00";
     }
     else tempo[1] = 30;
     return `${tempo[0]}:${tempo[1]}`;
@@ -97,6 +97,8 @@ export default function Agenda(){
     const [inicioRegistro, setInicioRegistro] = useState("");
     const [fimRegistro, setFimRegistro] = useState("");
     const [descRegistro, setDescRegistro] = useState("");
+    const [attPacienteRegistro, setAttPacienteRegistro] = useState("");
+    const [altOdontoRegistro, setAltOdontoRegistro] = useState("");
     const [openRegistrar, setOpenRegistrar] = useState(false);
     const [openConsulta, setOpenConsulta] = useState(false);
     const [consultaAgenda, setConsultaAgenda] = useState(null);
@@ -104,6 +106,7 @@ export default function Agenda(){
     const [dia, setDia] = useState(getHoje());
     const [atualizaAgenda, setAtualizaAgenda] = useState(false);
     const [rows, setRows] = useState(createAgenda());
+    const [dataEntrada, setDataEntrada] = useState(dia);
   const handleClickOpenRegistrar = () => {
     const botao = document.activeElement;
     botao.blur();
@@ -132,6 +135,14 @@ export default function Agenda(){
     setOpenRegistrar(false);
   };
 
+  const verificarData = (string) => {
+    const numeros = string.split("/");
+    if(isNaN(numeros[0]) || isNaN(numeros[1]) || isNaN(numeros[2])) throw new Error("Formato Inválido");
+    if( Number(numeros[1]) > 12 || Number(numeros[2]) > 31) throw new Error("Mês ou Ano acima do possível");
+    if( Number(numeros[0]) < 0 || Number(numeros[1]) < 0 || Number(numeros[2]) < 0 ) throw new Error("Números negativos");
+    return numeros[0] + "/" + numeros[1] + "/" + numeros[2];
+  }
+
   const Atualiza = () => {
     setAtualizaAgenda(!atualizaAgenda);
   }
@@ -145,7 +156,7 @@ export default function Agenda(){
     }
   }
 
-  async function handleSubmit(event) {
+  async function handleSubmit() {
     try{
         setCarregando(true);
         const dados = {
@@ -158,19 +169,85 @@ export default function Agenda(){
             horario_hora: inicioRegistro,
             horario_fim: fimRegistro,
         }
-        console.log(dados);
         await cadastrarConsulta(dados);
         Atualiza();
     }
     catch(error){
         console.error("Erro ao cadastrar consulta:", erro);
-        alert(erro.response?.data?.erro || "Erro ao cadastrar consulta.");
+        alert(error.response?.data?.error || "Erro ao cadastrar consulta.");
     } finally {
         setCarregando(false);
         handleCloseRegistrar();
     }
     Atualiza();
   };
+
+  async function handleSubmitAtualiza() {
+    try{
+        setCarregando(true);
+        const dados = {
+            paciente_id: pacienteRegistro,
+            procedimento_id: procedimentoRegistro,
+            consulta_valor: valorRegistro,
+            consulta_desc: descRegistro,
+            consulta_alt_odonto: altOdontoRegistro,
+            consulta_att_paciente: attPacienteRegistro,
+        }
+        if(dados.consulta_valor != "" && isNaN(dados.consulta_valor)) throw new Error("Valor tem que ser númerico");
+        await atualizarConsulta(consultaAgenda.consulta_id ,dados);
+        Atualiza();
+        handleCloseConsulta();
+    }
+    catch(error){
+        console.error("Erro ao atualizar consulta:", error);
+        alert(error.message || "Erro ao atualizar consulta.");
+    } finally {
+        setCarregando(false);
+    }
+    Atualiza();
+  };
+
+  async function handleSubmitDeleta() {
+    try{
+        setCarregando(true);
+        await deletarConsulta(consultaAgenda.consulta_id);
+        Atualiza();
+        handleCloseConsulta();
+    }
+    catch(error){
+        console.error("Erro ao deletar consulta:", error);
+        alert(error.message || "Erro ao deletar consulta.");
+    } finally {
+        setCarregando(false);
+    }
+    Atualiza();
+  };
+
+  async function handleSubmitDebito() {
+    try{
+        setCarregando(true);
+        await gerarDebito(consultaAgenda.consulta_id, consultaAgenda.paciente_id, consultaAgenda.consulta_valor);
+        Atualiza();
+        handleCloseConsulta();
+    }
+    catch(error){
+        console.error("Erro ao gerar débito:", error);
+        alert(error.message || "Erro ao gerar débito.");
+    } finally {
+        setCarregando(false);
+    }
+    Atualiza();
+  }
+
+  async function handleCloseConsulta() {
+    setPacienteRegistro(null);
+    setProcedimentoRegistro(null);
+    setValorRegistro("");
+    setDescRegistro("");
+    setAttPacienteRegistro("");
+    setAltOdontoRegistro("");
+    setOpenConsulta(false);
+  }
 
   async function handleClickOpenAgenda(event) {
     if(carregando) return;
@@ -183,31 +260,25 @@ export default function Agenda(){
         const consulta_id = Number(texto[texto.length-1]);
         const agendaConsulta = await buscarConsulta(consulta_id);
         setConsultaAgenda(agendaConsulta);
-        console.log(agendaConsulta);
         setOpenConsulta(true);
     }
     catch(error){
-        console.error("Erro ao buscar consulta:", erro);
-        alert(erro.response?.data?.erro || "Erro ao buscar consulta.");
+        console.error("Erro ao buscar consulta:", error.message);
+        alert(error.message || "Erro ao buscar consulta.");
     } finally {
         setCarregando(false);
     }
   }
 
-  async function handleCloseAgenda() {
-    setOpenConsulta(false);
-  }
-
-  async function deletarConsulta(){
+  async function onChangeData() {
     try{
-        setCarregando(true)
-        const resposta = await deletarConsulta(consultaAgenda.consulta_id);
+        const novaData = await verificarData(dataEntrada);
+        setDia(novaData);
+        Atualiza();
     }
     catch(error){
-        console.error("Erro ao deletar consulta:", erro);
-        alert(erro.response?.data?.erro || "Erro ao deletar consulta.");
-    } finally {
-        setCarregando(false);
+        console.error("Erro ao setar data nova:", error);
+        alert(error.response?.data?.error || "Erro ao setar data nova.");
     }
   }
 
@@ -415,7 +486,7 @@ export default function Agenda(){
                 </DialogContent>
                 <DialogActions>
                 <Button onClick={handleCloseRegistrar}>Cancelar</Button>
-                <Button onClick={handleSubmit}>
+                <Button disabled={carregando} onClick={handleSubmit}>
                     {carregando ? "Registrando..." : "Registrar"}
                 </Button>
                 </DialogActions>
@@ -485,7 +556,7 @@ export default function Agenda(){
             </TableContainer>
             {consultaAgenda && <Dialog 
             open={openConsulta} 
-            onClose={handleCloseAgenda}
+            onClose={handleCloseConsulta}
             fullWidth
             maxWidth="md"
             >
@@ -505,8 +576,103 @@ export default function Agenda(){
                         <p>Atualização do Paciente: {consultaAgenda.consulta_att}</p>
                         <p>Atualização do Odontograma: {consultaAgenda.alt_odonto}</p>
                     </Box>
+                    {consultaAgenda.Financeiro && <div>
+                        <h2>Financeiro</h2>
+                        <Box component="section" sx={{ p: 2, border: '1px dashed grey' }}>
+                            <p>Pago: {consultaAgenda.Financeiro.financeiro_pago}</p>
+                            <p>Devendo: {consultaAgenda.Financeiro.financeiro_devendo}</p>
+                            <p>Saldo: {consultaAgenda.Financeiro.financeiro_saldo}</p>
+                        </Box>
+                    </div>}
+                    <h2>Editar Consulta</h2>
+                    <Box component="section" sx={{ p: 2, border: '1px dashed grey' }}>
+                        <Autocomplete
+                        disablePortal
+                        options={pacientes}
+                        sx={{ width: 300 }}
+                        renderInput={(params) => <TextField {...params} label="Paciente" />}
+                        name="paciente_id"
+                        getOptionValue={getPacienteId}
+                        value={pacienteRegistro}
+                        onChange={(_event, newValue) => {
+                            setPacienteRegistro(newValue);
+                        }}
+                        />
+                        <Autocomplete
+                        disablePortal
+                        options={procedimentos}
+                        sx={{ width: 300 }}
+                        renderInput={(params) => <TextField {...params} label="Procedimento" />}
+                        name="procedimento_id"
+                        getOptionValue={getProcedimentoId}
+                        value={procedimentoRegistro}
+                        onChange={(_event, newValue) => {
+                            setProcedimentoRegistro(newValue);
+                        }}
+                        />
+                        <TextField 
+                        value={valorRegistro}
+                        onChange={(event) => {
+                            setValorRegistro(event.target.value);
+                        }}
+                        label="Valor"
+                        placeholder="x.xx"
+                        />
+                        <div>
+                            <TextField 
+                            value={descRegistro}
+                            onChange={(event) => {
+                                setDescRegistro(event.target.value);
+                            }}
+                            multiline
+                            fullWidth
+                            label="Descrição da Consulta"
+                            />
+                        </div>
+                        { VerificaPermissao("DENTISTA") && <div>
+                            <div>
+                                <TextField 
+                                value={attPacienteRegistro}
+                                onChange={(event) => {
+                                    setAttPacienteRegistro(event.target.value);
+                                }}
+                                multiline
+                                fullWidth
+                                label="Atualização do Estado do Paciente"
+                                />
+                            </div>
+                            <div>
+                                <TextField 
+                                value={altOdontoRegistro}
+                                onChange={(event) => {
+                                    setAltOdontoRegistro(event.target.value);
+                                }}
+                                multiline
+                                fullWidth
+                                label="Alterações feitas no Odontograma"
+                                />
+                            </div>
+                        </div>}
+                        <Button disabled={carregando} onClick={handleSubmitAtualiza}>Atualizar Consulta</Button>
+                    </Box>
+                    {!consultaAgenda.Financeiro && <Button disabled={carregando} onClick={handleSubmitDebito}>Gerar Débito</Button>}
+                    <Button disabled={carregando} onClick={handleSubmitDeleta}>Deletar Consulta</Button>
                 </DialogContent>
             </Dialog>}
+            <Box
+            component="form"
+            sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' } }}
+            >
+                <TextField 
+                value={dataEntrada}
+                onChange={(event) => {
+                    setDataEntrada(event.target.value);
+                }}
+                label="Dia"
+                placeholder="ano/mes/dia"
+                />
+                <Button onClick={onChangeData}>Ver Agenda do Dia</Button>
+            </Box>
         </Stack>
     );
 }

@@ -25,9 +25,11 @@ router.post("/consulta", requirePermissaoMult(['SECRETARIO','DENTISTA','ADMIN'])
 
 router.post("/consulta/:id/dentista", requirePermissao(['SECRETARIO','ADMIN']) , consultaController.adicionarDentistaConsulta);
 
-router.put("/consulta/:id", requirePermissaoMult(['SECRETARIO','DENTISTA','ADMIN']) , consultaController.atualizarConsulta);
+router.patch("/consulta/:id", requirePermissaoMult(['SECRETARIO','DENTISTA','ADMIN']) , consultaController.atualizarConsulta);
 // DELETE /consulta/:id
 router.delete("/consulta/:id", requirePermissaoMult(['SECRETARIO','DENTISTA','ADMIN']) , consultaController.deletarConsulta);
+
+router.delete("/consulta/:id/horarios", requirePermissaoMult(['SECRETARIO','DENTISTA']) , consultaController.deletarHorariosConsulta);
 
 router.delete("/consulta/:id/dentista", requirePermissao('SECRETARIO','ADMIN') , consultaController.removerDentistaConsulta);
 

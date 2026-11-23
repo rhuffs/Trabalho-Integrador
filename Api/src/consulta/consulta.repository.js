@@ -1,6 +1,6 @@
 const { Op } = require("sequelize");
 const { Horario, Consulta, Procedimento, Paciente, ProfissionalConsulta, Profissional, Financeiro } = require("../database/models");
-const {criarHorario} = require("../horario/horario.service");
+const criarHorario = require("../horario/horario.service").criarHorario;
 
 async function listarConsultasPaciente(paciente_id) {
     return Consulta.findAll({ 
@@ -70,7 +70,6 @@ async function buscarConsulta(consulta_id) {
             { model: Procedimento, },
             { 
                 model: Profissional,
-                attributes: ['nome', 'telefone'],
             },
             { model: Financeiro},
             { model: Horario },

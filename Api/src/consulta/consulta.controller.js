@@ -41,6 +41,31 @@ async function buscarConsulta(req, res) {
     }
 }
 
+async function deletarHorariosConsulta(req, res) {
+    try {
+        const consulta = await consultaService.buscarConsulta(req.params.id);
+        if (!consulta) return res.status(404).json({ erro: "consulta não encontrada" });
+        let cond = false;
+        if(req.perm != "SECRETARIO"){
+            for(let x of consulta.Profissionals){
+                if (x.profissional_login == req.user.profissional_login){
+                    cond = true;
+                    break;
+                }
+            }
+            if(!cond) throw new Error("Permissão Inválida", {cause: "Dentistas podem deletar apenas as próprias consultas"});
+        }
+        for(let x of consulta.Horarios){
+            await x.destroy();
+        }
+        return res.status(200).json(consulta.Horarios);
+    } catch (erro) {
+        console.log(req);
+        console.log("Erro ao buscar consulta:", erro);
+        return res.status(500).json({ erro: erro.message });
+    }
+}
+
 async function criarConsulta(req, res) {
     try {
         await verificarAcessoDentista(req, true);
@@ -114,6 +139,7 @@ module.exports = {
     criarConsulta,
     atualizarConsulta,
     deletarConsulta,
+    deletarHorariosConsulta,
     adicionarDentistaConsulta,
     removerDentistaConsulta,
     listarConsultasPaciente,

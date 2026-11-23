@@ -241,7 +241,7 @@ CREATE TABLE horario(
 );
 
 ALTER TABLE horario ADD CONSTRAINT pk_horario PRIMARY KEY (profissional_login, horario_data, horario_hora);
-ALTER TABLE horario ADD CONSTRAINT fk_horario_consulta FOREIGN KEY (horario_consulta) REFERENCES consulta (consulta_id);
+ALTER TABLE horario ADD CONSTRAINT fk_horario_consulta FOREIGN KEY (horario_consulta) REFERENCES consulta (consulta_id) ON DELETE CASCADE;
 ALTER TABLE horario ADD CONSTRAINT fk_horario_dentista FOREIGN KEY (profissional_login) REFERENCES profissional (profissional_login);
 
 CREATE TABLE remedio(

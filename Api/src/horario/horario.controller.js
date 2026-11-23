@@ -8,7 +8,6 @@ async function listarHorariosSemana(req, res) {
         return res.status(200).json(horario);
     } catch (erro) {
         console.log("Erro ao buscar horarios:", erro);
-        console.log("ABC:", req.body);
         return res.status(500).json({ erro: erro.message });
     }
 }
